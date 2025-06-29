@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\administracion\Bodega;
 use App\Models\administracion\Cliente;
 use App\Models\administracion\Empresa;
-use App\Models\administracion\Producto;
+use Barryvdh\DomPDF\Facade\Pdf;
 use App\Models\catalogo\Estado;
 use App\Models\inventario\Documento;
 use App\Models\inventario\Transacciones;
@@ -570,7 +570,7 @@ class ClienteController extends Controller
         $abonos = $contrato->abonos->sum('amount') ?? 0.00;
 
         $users = User::where('id', '>', 1)->get();
-        return view('administracion.cliente.contrato_show', compact('contrato', 'tab', 'bodegas', 'productos', 'users', 'usuariosAsignados','abonos'));
+        return view('administracion.cliente.contrato_show', compact('contrato', 'tab', 'bodegas', 'productos', 'users', 'usuariosAsignados', 'abonos'));
     }
 
     public function contrato_empleado_store(Request $request, string $id)
@@ -851,13 +851,24 @@ class ClienteController extends Controller
         }
     }
 
+
+    public function contrato_reporte($id)
+    {
+        $contrato = Contrato::findOrFail($id);
+
+        //return view('administracion.cliente.contrato_reporte', compact('contrato'));
+
+        $pdf = PDF::loadView('administracion.cliente.contrato_reporte', compact('contrato'));
+        return $pdf->download('documento.pdf');
+    }
+
     /*
 
 
 
 
 
-public function process_contract($user, $contract_id)
+    public function process_contract($user, $contract_id)
 	{
 		$this->update_contract_amount($contract_id);
 

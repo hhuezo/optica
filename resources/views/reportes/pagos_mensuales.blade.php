@@ -136,7 +136,7 @@
     <!-- Activar DataTable -->
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            expandMenuAndHighlightOption('ventasMenu', 'estadoPagoOption');
+            expandMenuAndHighlightOption('reportesMenu', 'reportePagosOption');
 
             $('#datatable-basic').DataTable({
                 ordering: false,

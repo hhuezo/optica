@@ -71,12 +71,14 @@
                                         <td>${{ $item->amount }}</td>
                                         <td>{{ $item->estado->description ?? '' }}</td>
                                         <td>
-                                            <button class="btn btn-sm btn-info btn-wave">
-                                                &nbsp;<i class="bi bi-file-earmark-pdf-fill"></i>&nbsp;</button>
-                                            &nbsp;
                                             <a href="{{ url('cliente/contrato_show') }}/{{ $item->id }}"> <button
                                                     class="btn btn-sm btn-warning btn-wave">
                                                     &nbsp;<i class="bi bi-card-list"></i>&nbsp;</button></a>
+
+                                            &nbsp;
+                                            <a href="{{ url('cliente/contrato_reporte') }}/{{ $item->id }}" target="_blank"> <button
+                                                    class="btn btn-sm btn-info btn-wave">
+                                                    &nbsp;<i class="bi bi-file-earmark-pdf-fill"></i>&nbsp;</button></a>
                                         </td>
                                     </tr>
                                 @endforeach
@@ -86,7 +88,7 @@
                 </div>
 
                 <div class="card-footer" style="text-align: center">
-                    <button class="btn btn-success"  data-bs-toggle="modal" data-bs-target="#modal-create">+</button>
+                    <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#modal-create">+</button>
                 </div>
 
             </div>

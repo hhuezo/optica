@@ -11,6 +11,7 @@ use App\Models\inventario\Documento;
 use App\Models\inventario\DocumentoDetalle;
 use App\Models\inventario\Stock;
 use App\Models\inventario\Transacciones;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -68,6 +69,10 @@ class DocumentoController extends Controller
                 &nbsp;
                 <a href="' . url('documento/' . $item->id) . '" class="btn btn-sm btn-success btn-wave">
                     <i class="ri-file-line"></i>
+                </a>
+                 &nbsp;
+                <a href="' . url('documento/reporte/' . $item->id) . '" class="btn btn-sm btn-warning btn-wave">
+                    <i class="bi bi-box-arrow-in-down"></i>
                 </a>';
             })
             ->rawColumns(['actions'])
@@ -639,11 +644,20 @@ class DocumentoController extends Controller
         }
     }
 
+    public function reporte($id)
+    {
+        $documento = Documento::findOrFail($id);
+
+        //return view('inventario.documento.reporte_documento', compact('documento'));
+
+        $pdf = PDF::loadView('inventario.documento.reporte_documento', compact('documento'));
+        return $pdf->download('documento.pdf');
+    }
+
 
 
     /*
-
-public function procesar(string $id)
+    public function procesar(string $id)
     {
         dd("procesar");
         DB::beginTransaction();
@@ -740,30 +754,14 @@ public function procesar(string $id)
             return back()->with('error', 'Error: ' . $e->getMessage());
         }
     }
-
-
     */
 
 
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function edit($id)
     {
         //
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function update(Request $request, $id)
     {
         $validator = Validator::make($request->all(), [
@@ -809,13 +807,6 @@ public function procesar(string $id)
         }
     }
 
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function destroy($id)
     {
         //

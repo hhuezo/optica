@@ -61,4 +61,5 @@ class Contrato extends Model
     {
         return $this->hasMany(Abono::class, 'contracts_id');
     }
+
 }

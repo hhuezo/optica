@@ -72,6 +72,8 @@ Route::middleware(['auth'])->group(function () {
     Route::post('cliente/contrato_abono/{id}', [ClienteController::class, 'contrato_abono']);
 
 
+    Route::get('cliente/contrato_reporte/{id}', [ClienteController::class, 'contrato_reporte']);
+    Route::post('cliente/contrato_abono/{id}', [ClienteController::class, 'contrato_abono']);
     Route::get('cliente/get_cliente/{id}', [ClienteController::class, 'get_cliente']);
     Route::get('clientes/data', [ClienteController::class, 'data']);
     Route::post('clientes/update_record/{id}', [ClienteController::class, 'update_record']);
@@ -96,7 +98,9 @@ Route::middleware(['auth'])->group(function () {
     Route::post('documento/detalle_store', [DocumentoController::class, 'detalleStore']);
     Route::delete('documento/detalle_destroy/{id}', [DocumentoController::class, 'detalleDestroy'])->name('documento.detalle.destroy');
 
-    Route::get('documento/data', [DocumentoController::class,'data']);
+    Route::get('documento/reporte/{id}', [DocumentoController::class, 'reporte']);
+    Route::get('documento/data', [DocumentoController::class, 'data']);
+
     Route::resource('documento', DocumentoController::class);
 
 
