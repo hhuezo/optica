@@ -92,13 +92,13 @@
 
                             <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12">
                                 <label for="input-label" class="form-label">Fecha inicio</label>
-                                <input type="date" class="form-control" name="fecha_inicio" value="{{ $fechaInicio }}"
+                                <input type="date" class="form-control" name="fechaInicio" value="{{ $fechaInicio }}"
                                     required>
                             </div>
 
                             <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12">
                                 <label for="input-label" class="form-label">Fecha final</label>
-                                <input type="date" class="form-control" name="fecha_final" value="{{ $fechaFinal }}"
+                                <input type="date" class="form-control" name="fechaFinal" value="{{ $fechaFinal }}"
                                     required>
                             </div>
                         </div>

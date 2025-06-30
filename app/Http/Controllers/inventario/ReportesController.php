@@ -99,8 +99,9 @@ class ReportesController extends Controller
 
     public function pagos_mensuales(Request $request)
     {
-        $fechaInicio = $request->fechaInicio ??  Carbon::now()->startOfMonth()->toDateString();
-        $fechaFinal = $request->fechaInicio ?? Carbon::now()->endOfMonth()->toDateString();
+        $fechaInicio = Carbon::parse($request->fechaInicio ?? Carbon::now()->startOfMonth());
+        $fechaFinal  = Carbon::parse($request->fechaFinal  ?? Carbon::now()->endOfMonth());
+
 
 
         $pagos = DB::table('receipts')
