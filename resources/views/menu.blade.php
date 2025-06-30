@@ -259,8 +259,7 @@
                                     onclick="event.preventDefault();
                                                  document.getElementById('logout-form').submit();">
                                     <i
-                                        class="fe fe-lock p-1 rounded-circle bg-primary-transparent ut me-2 fs-16"></i>Log
-                                    Out</a>
+                                        class="fe fe-lock p-1 rounded-circle bg-primary-transparent ut me-2 fs-16"></i>Cerrar sesión</a>
                             </li>
                             <form id="logout-form" action="{{ route('logout') }}" method="POST"
                                 style="display: none;">
