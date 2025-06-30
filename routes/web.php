@@ -5,6 +5,7 @@ use App\Http\Controllers\administracion\ClienteController;
 use App\Http\Controllers\administracion\EmpresaController;
 use App\Http\Controllers\administracion\ProductoController;
 use App\Http\Controllers\administracion\SucursalController;
+use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\catalogo\MarcaController;
 use App\Http\Controllers\inventario\DocumentoController;
 use App\Http\Controllers\inventario\ReportesController;
@@ -24,9 +25,9 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('auth.login');
-});
+
+
+Route::get('/', [LoginController::class, 'showLoginForm']);
 
 Auth::routes();
 
