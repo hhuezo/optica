@@ -230,7 +230,7 @@
                         <!-- End::header-link|dropdown-toggle -->
                         <ul class="main-header-dropdown dropdown-menu pt-0 overflow-hidden header-profile-dropdown dropdown-menu-end"
                             aria-labelledby="mainHeaderProfile">
-                            <li>
+                            {{--<li>
                                 <div class="dropdown-item text-center border-bottom">
                                     <span>
                                         Mr.Henry
@@ -254,7 +254,7 @@
                             <li class="border-top bg-light"><a class="dropdown-item d-flex align-items-center"
                                     href="chat.html"><i
                                         class="fe fe-help-circle p-1 rounded-circle bg-primary-transparent set me-2 fs-16"></i>Help</a>
-                            </li>
+                            </li>--}}
                             <li><a class="dropdown-item d-flex align-items-center" href="{{ route('logout') }}"
                                     onclick="event.preventDefault();
                                                  document.getElementById('logout-form').submit();">
