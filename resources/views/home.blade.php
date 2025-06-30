@@ -37,7 +37,7 @@
                         <div class="card-body">
                             <div class="d-flex align-items-start justify-content-between mb-2">
                                 <div>
-                                    <span class="d-block text-muted mb-1">Deuda sector Privado</span>
+                                    <span class="d-block text-muted mb-1">Sector Privado</span>
                                     <h4 class="fw-medium mb-0">${{ number_format($data['totalSalesPrivado'], 2) }}</h4>
                                 </div>
                                 <div class="lh-1">
@@ -54,7 +54,7 @@
                         <div class="card-body">
                             <div class="d-flex align-items-start justify-content-between mb-2">
                                 <div>
-                                    <span class="text-muted d-block mb-1">Total deuda</span>
+                                    <span class="text-muted d-block mb-1">Total</span>
                                     <h4 class="fw-medium mb-0">${{ number_format($data['totalVentas'], 2) }}</h4>
                                 </div>
                                 <div class="lh-1">
