@@ -125,9 +125,9 @@
                 </div>
             </div>
         </div>
-        <div class="col-xxl-6 col-xl-5 col-lg-12 d-xl-block d-none px-0"
+        {{--<div class="col-xxl-6 col-xl-5 col-lg-12 d-xl-block d-none px-0"
             style="background-image: url('{{ asset('assets/images/background.jpg') }}'); background-size: cover; background-position: center; height: 100vh;">
 
-        </div>
+        </div>--}}
     </div>
 @endsection
