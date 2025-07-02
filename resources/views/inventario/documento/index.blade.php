@@ -63,6 +63,19 @@
                                     <th>Estado</th>
                                     <th>Opciones</th>
                                 </tr>
+                                <tr class="filters">
+                                    <th><input type="text" class="form-control form-control-sm" placeholder="buscar" />
+                                    </th>
+                                    <th><input type="text" class="form-control form-control-sm" placeholder="buscar" />
+                                    </th>
+                                    <th><input type="text" class="form-control form-control-sm" placeholder="buscar" />
+                                    </th>
+                                    <th><input type="text" class="form-control form-control-sm" placeholder="buscar" />
+                                    </th>
+                                    <th><input type="text" class="form-control form-control-sm" placeholder="buscar" />
+                                    </th>
+                                    <th></th> <!-- No filtro para "Opciones" -->
+                                </tr>
                             </thead>
 
                         </table>
@@ -240,18 +253,82 @@
             expandMenuAndHighlightOption('inventarioMenu', 'documentoOption');
 
 
-            $('#documentos-table').DataTable({
+            const table = $('#documentos-table').DataTable({
                 processing: true,
                 serverSide: true,
                 ajax: '{{ url('documento/data') }}',
+                columns: [{
+                        data: 'id',
+                        name: 'documents.id'
+                    },
+                    {
+                        data: 'doc_number',
+                        name: 'documents.doc_number'
+                    },
+                    {
+                        data: 'document_types',
+                        name: 'document_types.name'
+                    },
+                    {
+                        data: 'warehouses',
+                        name: 'warehouses.name'
+                    },
+                    {
+                        data: 'statuses',
+                        name: 'statuses.description'
+                    },
+                    /*{
+                        data: 'justification',
+                        name: 'documents.justification'
+                    },*/
+                    {
+                        data: 'actions',
+                        orderable: false,
+                        searchable: false
+                    }
+                ],
+                ordering: false,
+                pageLength: 50,
+                dom: 'Bfrtip',
+                searching: false,
+                buttons: [{
+                        extend: 'excelHtml5',
+                        text: '<i class="ri-file-excel-2-line"></i> Excel',
+                        className: 'btn btn-success btn-sm',
+                        filename: 'documentos',
+                        title: 'Listado de Documentos',
+                        exportOptions: {
+                            columns: ':visible'
+                        }
+                    },
+                    {
+                        extend: 'pdfHtml5',
+                        text: '<i class="ri-file-pdf-2-line"></i> PDF',
+                        className: 'btn btn-danger btn-sm',
+                        orientation: 'landscape',
+                        pageSize: 'A4',
+                        filename: 'documentos',
+                        title: 'Listado de Documentos',
+                        exportOptions: {
+                            columns: ':visible'
+                        }
+                    },
+                    {
+                        extend: 'print',
+                        text: '<i class="ri-printer-line"></i> Imprimir',
+                        className: 'btn btn-secondary btn-sm',
+                        exportOptions: {
+                            columns: ':visible'
+                        }
+                    }
+                ],
                 language: {
                     processing: "Procesando...",
-                    search: "Buscar:",
+                    search: "",
                     lengthMenu: "Mostrar _MENU_ registros",
                     info: "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
                     infoEmpty: "Mostrando registros del 0 al 0 de un total de 0 registros",
                     infoFiltered: "(filtrado de un total de _MAX_ registros)",
-                    infoPostFix: "",
                     loadingRecords: "Cargando...",
                     zeroRecords: "No se encontraron resultados",
                     emptyTable: "Ningún dato disponible en esta tabla",
@@ -273,32 +350,18 @@
                         pdf: "PDF"
                     }
                 },
-                columns: [{
-                        data: 'id',
-                        name: 'documents.id'
-                    },
-                    {
-                        data: 'doc_number',
-                        name: 'documents.doc_number'
-                    },
-                    {
-                        data: 'document_types',
-                        name: 'document_types.name'
-                    },
-                    {
-                        data: 'warehouses',
-                        name: 'warehouses.name'
-                    },
-                    {
-                        data: 'statuses',
-                        name: 'statuses.description'
-                    },
-                    {
-                        data: 'actions',
-                        orderable: false,
-                        searchable: false
-                    }
-                ]
+                initComplete: function() {
+                    const api = this.api();
+                    api.columns().every(function() {
+                        const column = this;
+                        $('input', $('.filters th').eq(column.index())).on('keyup change clear',
+                            function() {
+                                if (column.search() !== this.value) {
+                                    column.search(this.value).draw();
+                                }
+                            });
+                    });
+                }
             });
 
 
