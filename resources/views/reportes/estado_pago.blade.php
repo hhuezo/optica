@@ -52,6 +52,23 @@
                                     <th>120 dias</th>
                                     <th>Más dias</th>
                                 </tr>
+                            <tfoot>
+                                <tr>
+                                    <th><input type="text" class="form-control form-control-sm" placeholder="Buscar" /></th>
+                                    <th><input type="text" class="form-control form-control-sm" placeholder="Buscar" /></th>
+                                    <th><input type="text" class="form-control form-control-sm" placeholder="Buscar" /></th>
+                                    <th><input type="text" class="form-control form-control-sm" placeholder="Buscar" /></th>
+                                    <th><input type="text" class="form-control form-control-sm" placeholder="Buscar" /></th>
+                                    <th><input type="text" class="form-control form-control-sm" placeholder="Buscar" /></th>
+                                    <th><input type="text" class="form-control form-control-sm" placeholder="Buscar" /></th>
+                                    <th><input type="text" class="form-control form-control-sm" placeholder="Buscar" /></th>
+                                    <th><input type="text" class="form-control form-control-sm" placeholder="Buscar" /></th>
+                                    <th><input type="text" class="form-control form-control-sm" placeholder="Buscar" /></th>
+                                    <th><input type="text" class="form-control form-control-sm" placeholder="Buscar" /></th>
+                                    <th><input type="text" class="form-control form-control-sm" placeholder="Buscar" /></th>
+                                </tr>
+                            </tfoot>
+
                             </thead>
                             <tbody>
                                 @foreach ($registros as $item)
@@ -219,25 +236,30 @@
         document.addEventListener('DOMContentLoaded', function() {
             expandMenuAndHighlightOption('ventasMenu', 'estadoPagoOption');
 
-            $('#datatable-basic').DataTable({
+            const table = $('#datatable-basic').DataTable({
                 ordering: false,
-                dom: 'Bfrtip', // ⬅️ Esto activa los botones arriba de la tabla
+                //pageLength: 50,
+                dom: "<'row mb-2'<'col-sm-12 col-md-6'B><'col-sm-12 col-md-6'f>>" + // Botones arriba
+                    "<'row'<'col-sm-12'tr>>" + // Tabla
+                    "<'row mt-2'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7'p>>", // Info y paginación
                 buttons: [{
                         extend: 'excelHtml5',
                         text: '<i class="ri-file-excel-2-line"></i> Excel',
                         className: 'btn btn-success btn-sm',
-                        filename: 'estado_pago', // ← Nombre del archivo .xlsx
-                        title: 'Estado de pagos' // ← Título dentro del Excel
+                        filename: 'estado_pago',
+                        title: 'Estado de pagos',
+                        exportOptions: {
+                            columns: ':visible'
+                        }
                     },
-
                     {
                         extend: 'pdfHtml5',
                         text: '<i class="ri-file-pdf-2-line"></i> PDF',
                         className: 'btn btn-danger btn-sm',
                         orientation: 'landscape',
                         pageSize: 'A4',
-                        filename: 'estado_pago', // ← Nombre del archivo .pdf
-                        title: 'Estado de pagos', // ← Título dentro del PDF
+                        filename: 'estado_pago',
+                        title: 'Estado de pagos',
                         exportOptions: {
                             columns: ':visible'
                         }
@@ -245,41 +267,52 @@
                     {
                         extend: 'print',
                         text: '<i class="ri-printer-line"></i> Imprimir',
-                        className: 'btn btn-secondary btn-sm'
+                        className: 'btn btn-secondary btn-sm',
+                        exportOptions: {
+                            columns: ':visible'
+                        }
                     }
                 ],
                 language: {
                     processing: "Procesando...",
-                    search: "Buscar:",
-                    lengthMenu: "Mostrar _MENU_ registros",
-                    info: "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
-                    infoEmpty: "Mostrando registros del 0 al 0 de un total de 0 registros",
-                    infoFiltered: "(filtrado de un total de _MAX_ registros)",
-                    loadingRecords: "Cargando...",
+                    lengthMenu: "Mostrar _MENU_ registros por página",
                     zeroRecords: "No se encontraron resultados",
-                    emptyTable: "Ningún dato disponible en esta tabla",
+                    emptyTable: "No hay datos disponibles",
+                    info: "Mostrando _START_ a _END_ de _TOTAL_ registros",
+                    infoEmpty: "Mostrando 0 a 0 de 0 registros",
+                    infoFiltered: "(filtrado de _MAX_ registros totales)",
                     paginate: {
-                        first: "<<",
-                        previous: "<",
-                        next: ">",
-                        last: ">>"
+                        first: "Primero",
+                        previous: "Anterior",
+                        next: "Siguiente",
+                        last: "Último"
                     },
                     aria: {
-                        sortAscending: ": Activar para ordenar la columna de manera ascendente",
-                        sortDescending: ": Activar para ordenar la columna de manera descendente"
+                        sortAscending: ": activar para ordenar ascendente",
+                        sortDescending: ": activar para ordenar descendente"
                     },
                     buttons: {
                         copy: 'Copiar',
-                        colvis: 'Visibilidad',
+                        colvis: 'Columnas visibles',
                         print: 'Imprimir',
                         excel: 'Exportar Excel',
                         pdf: 'Exportar PDF'
                     }
+                },
+                initComplete: function() {
+                    this.api().columns().every(function() {
+                        const column = this;
+                        $('input', column.footer()).on('keyup change clear', function() {
+                            if (column.search() !== this.value) {
+                                column.search(this.value).draw();
+                            }
+                        });
+                    });
                 }
             });
 
-
-
+            // Quitar el campo de búsqueda global
+            $('#datatable-basic_filter').remove();
         });
     </script>
     <!-- End:: row-1 -->
