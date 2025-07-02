@@ -67,6 +67,22 @@
                                     <th>Estado</th>
                                     <th>Opciones</th>
                                 </tr>
+                                <tr class="filters">
+                                    <th></th>
+                                    <th><input type="text" class="form-control form-control-sm" placeholder="buscar" />
+                                    </th>
+                                    <th><input type="text" class="form-control form-control-sm" placeholder="buscar" />
+                                    </th>
+                                    <th><input type="text" class="form-control form-control-sm" placeholder="buscar" />
+                                    </th>
+                                    <th><input type="text" class="form-control form-control-sm" placeholder="buscar" />
+                                    </th>
+                                    <th><input type="text" class="form-control form-control-sm" placeholder="buscar" />
+                                    </th>
+                                    <th><input type="text" class="form-control form-control-sm" placeholder="buscar" />
+                                    </th>
+                                    <th></th>
+                                </tr>
                             </thead>
 
                         </table>
@@ -278,18 +294,18 @@
 
 
 
-            $('#clientes-table').DataTable({
+            const table = $('#clientes-table').DataTable({
                 processing: true,
                 serverSide: true,
                 ajax: '{{ url('clientes/data') }}',
+                orderCellsTop: true,
                 language: {
                     processing: "Procesando...",
-                    search: "Buscar:",
+                    search: "", // ❌ Quitamos el buscador global
                     lengthMenu: "Mostrar _MENU_ registros",
                     info: "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
                     infoEmpty: "Mostrando registros del 0 al 0 de un total de 0 registros",
                     infoFiltered: "(filtrado de un total de _MAX_ registros)",
-                    infoPostFix: "",
                     loadingRecords: "Cargando...",
                     zeroRecords: "No se encontraron resultados",
                     emptyTable: "Ningún dato disponible en esta tabla",
@@ -332,59 +348,37 @@
                         name: 'clients.phone'
                     },
                     {
-                        data: 'statuses',
-                        name: 'statuses.description'
-                    },
-                    {
                         data: 'contracts',
                         orderable: false,
                         searchable: true
+                    },
+                    {
+                        data: 'statuses',
+                        name: 'statuses.description'
                     },
                     {
                         data: 'actions',
                         orderable: false,
                         searchable: false
                     }
-                ]
+                ],
+                initComplete: function() {
+                    const api = this.api();
+                    api.columns().every(function(index) {
+                        const column = this;
+                        $('thead tr.filters th').eq(index).find('input').on(
+                            'keyup change clear',
+                            function() {
+                                if (column.search() !== this.value) {
+                                    column.search(this.value).draw();
+                                }
+                            });
+                    });
+                }
             });
 
 
 
-            /*$('#datatable-basic').DataTable({
-                //paging: false, // Quita paginación
-                //searching: false, // Quita el cuadro de búsqueda
-                info: false, // Quita el texto de "Mostrando registros..."
-                ordering: false,
-                language: {
-                    processing: "Procesando...",
-                    search: "Buscar:",
-                    lengthMenu: "Mostrar _MENU_ registros",
-                    info: "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
-                    infoEmpty: "Mostrando registros del 0 al 0 de un total de 0 registros",
-                    infoFiltered: "(filtrado de un total de _MAX_ registros)",
-                    infoPostFix: "",
-                    loadingRecords: "Cargando...",
-                    zeroRecords: "No se encontraron resultados",
-                    emptyTable: "Ningún dato disponible en esta tabla",
-                    paginate: {
-                        first: "<<",
-                        previous: "<",
-                        next: ">",
-                        last: ">>"
-                    },
-                    aria: {
-                        sortAscending: ": Activar para ordenar la columna de manera ascendente",
-                        sortDescending: ": Activar para ordenar la columna de manera descendente"
-                    },
-                    buttons: {
-                        copy: 'Copiar',
-                        colvis: 'Visibilidad',
-                        print: 'Imprimir',
-                        excel: 'Exportar Excel',
-                        pdf: 'Exportar PDF'
-                    }
-                }
-            });*/
 
             new Cleave('#nit', {
                 delimiters: ['-', '-', '-', '-'],

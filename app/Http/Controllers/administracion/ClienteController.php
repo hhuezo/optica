@@ -65,7 +65,8 @@ class ClienteController extends Controller
             ) as contracts")
         )
             ->join('company', 'clients.company_id', '=', 'company.id')
-            ->join('statuses', 'clients.statuses_id', '=', 'statuses.id');
+            ->join('statuses', 'clients.statuses_id', '=', 'statuses.id')
+            ->where('clients.statuses_id', '<>', 3);
 
         return DataTables::of($clientes)
             ->addColumn('actions', function ($row) {
