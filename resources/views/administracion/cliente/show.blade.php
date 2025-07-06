@@ -79,6 +79,11 @@
                                             <a href="{{ url('cliente/contrato_reporte') }}/{{ $item->id }}" target="_blank"> <button
                                                     class="btn btn-sm btn-info btn-wave">
                                                     &nbsp;<i class="bi bi-file-earmark-pdf-fill"></i>&nbsp;</button></a>
+
+                                                     &nbsp;
+                                            <a href="{{ url('cliente/contrato_receta') }}/{{ $item->id }}" target="_blank"> <button
+                                                    class="btn btn-sm btn-success btn-wave">
+                                                    &nbsp;<i class="bi bi-card-checklist"></i>&nbsp;</button></a>
                                         </td>
                                     </tr>
                                 @endforeach

@@ -863,6 +863,19 @@ class ClienteController extends Controller
         return $pdf->download('documento.pdf');
     }
 
+    public function contrato_receta($id)
+    {
+        $contrato = Contrato::findOrFail($id);
+
+        return view('administracion.cliente.contrato_receta', compact('contrato'));
+
+        $pdf = PDF::loadView('administracion.cliente.contrato_receta', compact('contrato'));
+        return $pdf->download('documento.pdf');
+    }
+
+
+
+
     /*
 
 

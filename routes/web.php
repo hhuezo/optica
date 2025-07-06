@@ -73,6 +73,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('cliente/contrato_abono/{id}', [ClienteController::class, 'contrato_abono']);
 
 
+    Route::get('cliente/contrato_receta/{id}', [ClienteController::class, 'contrato_receta']);
     Route::get('cliente/contrato_reporte/{id}', [ClienteController::class, 'contrato_reporte']);
     Route::post('cliente/contrato_abono/{id}', [ClienteController::class, 'contrato_abono']);
     Route::get('cliente/get_cliente/{id}', [ClienteController::class, 'get_cliente']);
