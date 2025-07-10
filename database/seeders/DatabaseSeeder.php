@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Hash;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
 use App\Models\User;
+use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
 class DatabaseSeeder extends Seeder
@@ -24,6 +25,12 @@ class DatabaseSeeder extends Seeder
         if (!Schema::hasColumn('documents', 'to_warehouse_id')) {
             DB::statement("ALTER TABLE `documents` ADD `to_warehouse_id` INT NULL AFTER `warehouses_id`");
         }
+
+        Schema::table('clients', function (Blueprint $table) {
+            $table->string('email', 100)->nullable();
+            $table->string('reference_phone', 20)->nullable();
+            $table->string('reference_name', 150)->nullable();
+        });
 
         $_users = DB::table('users_')->get();
 
@@ -49,7 +56,7 @@ class DatabaseSeeder extends Seeder
 
 
 
-       $admin = User::factory()->create([
+        $admin = User::factory()->create([
             'name' => 'admin',
             'username' => 'administrador',
             'user_name' => 'administrador',
@@ -60,7 +67,7 @@ class DatabaseSeeder extends Seeder
             'password' => Hash::make('12345678'),
         ]);
 
-         $role = Role::firstOrCreate(['name' => 'administrador']);
+        $role = Role::firstOrCreate(['name' => 'administrador']);
 
         // Asignar el rol al usuario
         $admin->assignRole($role);
@@ -86,6 +93,6 @@ class DatabaseSeeder extends Seeder
         }
 
         //deshabilitar reposision
-        TipoDocumento::where('id',4)->update(['statuses_id'=>3]);
+        TipoDocumento::where('id', 4)->update(['statuses_id' => 3]);
     }
 }

@@ -26,7 +26,10 @@ class Cliente extends Model
         'statuses_id',
         'nit',
         'employee_code',
-        'dependencia'
+        'dependencia',
+        'email',
+        'reference_name',
+        'reference_phone'
     ];
 
     protected $guarded = [];

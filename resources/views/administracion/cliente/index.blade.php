@@ -109,26 +109,25 @@
                             <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12">
                                 <label for="input-label" class="form-label">Nombre</label>
                                 <input type="text" class="form-control" name="name" value="{{ old('name') }}"
-                                    required>
+                                    required  onblur="this.value = this.value.toUpperCase()">
                             </div>
 
                             <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12">
                                 <label for="input-label" class="form-label">Apellido</label>
                                 <input type="text" class="form-control" name="lastname" value="{{ old('lastname') }}"
-                                    required>
+                                    required  onblur="this.value = this.value.toUpperCase()">
                             </div>
 
                             <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12">
                                 <label for="input-label" class="form-label">DUI</label>
                                 <input type="text" class="form-control" name="identification" id="identification"
                                     value="{{ old('identification') }}" required>
-                            </div>
 
-                            <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12">
-                                <label for="input-label" class="form-label">NIT</label>
-                                <input type="text" class="form-control" name="nit" id="nit"
+                                <input type="hidden" class="form-control" name="nit" id="nit"
                                     value="{{ old('nit') }}">
                             </div>
+
+
 
                             <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12">
                                 <label for="input-label" class="form-label">Código de empleado</label>
@@ -143,10 +142,11 @@
                             </div>
 
                             <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12">
-                                <label for="input-label" class="form-label">Dirección</label>
-                                <input type="text" class="form-control" name="address" value="{{ old('address') }}"
-                                    required>
+                                <label for="input-label" class="form-label">Correo</label>
+                                <input type="email" class="form-control" name="email" value="{{ old('email') }}">
                             </div>
+
+
 
                             <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12">
                                 <label for="input-label" class="form-label">Empresa:</label>
@@ -166,7 +166,37 @@
                                     value="{{ old('dependencia') }}">
                             </div>
 
+                            <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12">
+                                <label for="input-label" class="form-label">Dirección</label>
+                                <input type="text" class="form-control" name="address" value="{{ old('address') }}"
+                                    required>
+                            </div>
+
+
+                            <div class="modal-header">
+                                <h6 class="modal-title" id="exampleModalLgLabel">Referencia</h6>
+                            </div>
+
+                            <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12">
+                                <label for="input-label" class="form-label">Nombre</label>
+                                <input type="text" class="form-control" name="reference_name"
+                                    value="{{ old('reference_name') }}">
+                            </div>
+
+
+                            <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12">
+                                <label for="input-label" class="form-label">Teléfono</label>
+                                <input type="text" class="form-control" name="reference_phone"
+                                    value="{{ old('reference_phone') }}">
+                            </div>
+
+
+
+
+
                         </div>
+
+
 
 
 
@@ -203,24 +233,21 @@
                             <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12">
                                 <label for="edit_name" class="form-label">Nombre</label>
                                 <input type="hidden" class="form-control" name="name" id="edit_id">
-                                <input type="text" class="form-control" name="name" id="edit_name" required>
+                                <input type="text" class="form-control" name="name" id="edit_name" required  onblur="this.value = this.value.toUpperCase()">
                             </div>
 
                             <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12">
                                 <label for="edit_lastname" class="form-label">Apellido</label>
-                                <input type="text" class="form-control" name="lastname" id="edit_lastname" required>
+                                <input type="text" class="form-control" name="lastname" id="edit_lastname" required  onblur="this.value = this.value.toUpperCase()">
                             </div>
 
                             <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12">
                                 <label for="edit_identification" class="form-label">DUI</label>
                                 <input type="text" class="form-control" name="identification"
                                     id="edit_identification" required>
+                                <input type="hidden" class="form-control" name="nit" id="edit_nit">
                             </div>
 
-                            <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12">
-                                <label for="edit_nit" class="form-label">NIT</label>
-                                <input type="text" class="form-control" name="nit" id="edit_nit">
-                            </div>
 
                             <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12">
                                 <label for="edit_employee_code" class="form-label">Código de empleado</label>
@@ -233,9 +260,10 @@
                             </div>
 
                             <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12">
-                                <label for="edit_address" class="form-label">Dirección</label>
-                                <input type="text" class="form-control" name="address" id="edit_address" required>
+                                <label for="input-label" class="form-label">Correo</label>
+                                <input type="email" class="form-control" name="edit_email" value="{{ old('edit_email') }}" id="edit_email">
                             </div>
+
 
                             <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12">
                                 <label for="edit_company_id" class="form-label">Empresa:</label>
@@ -250,6 +278,28 @@
                             <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12">
                                 <label for="edit_dependencia" class="form-label">Dependencia</label>
                                 <input type="text" class="form-control" name="dependencia" id="edit_dependencia">
+                            </div>
+
+                             <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12">
+                                <label for="edit_address" class="form-label">Dirección</label>
+                                <input type="text" class="form-control" name="address" id="edit_address" required>
+                            </div>
+
+                            <div class="modal-header">
+                                <h6 class="modal-title" id="exampleModalLgLabel">Referencia</h6>
+                            </div>
+
+                            <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12">
+                                <label for="input-label" class="form-label">Nombre</label>
+                                <input type="text" class="form-control" name="edit_reference_name"
+                                    id="edit_reference_name" value="{{ old('edit_reference_name') }}">
+                            </div>
+
+
+                            <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12">
+                                <label for="input-label" class="form-label">Teléfono</label>
+                                <input type="text" class="form-control" name="edit_reference_phone"
+                                    id="edit_reference_phone" value="{{ old('edit_reference_phone') }}">
                             </div>
 
 
@@ -412,10 +462,11 @@
                 .then(data => {
                     if (data.success) {
                         const cliente = data.data;
+
                         document.getElementById('edit_id').value = cliente.id || '';
                         document.getElementById('edit_name').value = cliente.name || '';
                         document.getElementById('edit_lastname').value = cliente.lastname || '';
-                        document.getElementById('edit_identification').value = cliente.identification || '';
+                        document.getElementById('edit_identification').value =  cliente.identification || '';
                         document.getElementById('edit_nit').value = cliente.nit || '';
                         document.getElementById('edit_employee_code').value = cliente.employee_code || '';
                         document.getElementById('edit_phone').value = cliente.phone || '';
@@ -423,6 +474,9 @@
                         document.getElementById('edit_company_id').value = cliente.company_id || '';
                         document.getElementById('edit_dependencia').value = cliente.dependencia || '';
                         document.getElementById('edit_statuses_id').value = cliente.statuses_id || '';
+                        document.getElementById('edit_reference_name').value = cliente.reference_name || '';
+                        document.getElementById('edit_reference_phone').value = cliente.reference_phone || '';
+                        document.getElementById('edit_email').value = cliente.email || '';
                     } else {
                         throw new Error(data.message || 'Acción fallida');
                     }
@@ -434,13 +488,27 @@
         }
 
 
+
         function updateCliente() {
             clearValidationErrors();
 
             const clienteId = document.getElementById('edit_id').value;
-            const form = document.getElementById('formEditarCliente');
-            const formData = new FormData(form);
+
+            const formData = new FormData();
             formData.append('_token', '{{ csrf_token() }}');
+            formData.append('name', document.getElementById('edit_name').value || '');
+            formData.append('lastname', document.getElementById('edit_lastname').value || '');
+            formData.append('identification', document.getElementById('edit_identification').value || '');
+            formData.append('nit', document.getElementById('edit_nit').value || '');
+            formData.append('employee_code', document.getElementById('edit_employee_code').value || '');
+            formData.append('phone', document.getElementById('edit_phone').value || '');
+            formData.append('address', document.getElementById('edit_address').value || '');
+            formData.append('company_id', document.getElementById('edit_company_id').value || '');
+            formData.append('dependencia', document.getElementById('edit_dependencia').value || '');
+            formData.append('statuses_id', document.getElementById('edit_statuses_id').value || '');
+            formData.append('reference_name', document.getElementById('edit_reference_name').value || '');
+            formData.append('reference_phone', document.getElementById('edit_reference_phone').value || '');
+            formData.append('email', document.getElementById('edit_email').value || '');
 
             fetch(`{{ url('clientes/update_record') }}/${clienteId}`, {
                     method: 'POST',
@@ -461,11 +529,8 @@
                 .then(data => {
                     if (data.success) {
                         toastr.success(data.message, 'Éxito');
-                        // Ocultar modal Bootstrap 5
                         const modal = bootstrap.Modal.getInstance(document.getElementById('modal-edit'));
                         modal.hide();
-
-                        // Recargar tabla DataTable
                         $('#clientes-table').DataTable().ajax.reload(null, false);
                     } else {
                         alert('Hubo un error al actualizar el cliente');
@@ -478,7 +543,6 @@
                     }
                 });
         }
-
 
         function clearValidationErrors() {
             const errorContainer = document.getElementById('validation-errors');

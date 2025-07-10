@@ -145,6 +145,8 @@ class ClienteController extends Controller
             $cliente->nit = $validated['nit'] ?? null;
             $cliente->employee_code = $validated['employee_code'] ?? null;
             $cliente->dependencia = $validated['dependencia'] ?? null;
+            $cliente->reference_name = $request->reference_name;
+            $cliente->reference_phone = $request->reference_phone;
             $cliente->save();
 
             return back()->with('success', 'El cliente ha sido creado correctamente.');
@@ -190,7 +192,6 @@ class ClienteController extends Controller
     {
 
         // Validación de los datos del formulario
-        // Validación manual
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:50',
             'lastname' => 'required|string|max:50',
@@ -243,6 +244,9 @@ class ClienteController extends Controller
             $cliente->nit = $request->nit ?? null;
             $cliente->employee_code = $request->employee_code ?? null;
             $cliente->dependencia = $request->dependencia ?? null;
+            $cliente->reference_name = $request->reference_name ?? null;
+            $cliente->reference_phone = $request->reference_phone ?? null;
+            $cliente->email = $request->email ?? null;
             $cliente->save();
 
             $data = Cliente::select(
