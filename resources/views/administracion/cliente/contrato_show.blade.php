@@ -45,7 +45,7 @@
                         NUEVO CONTRATO - {{ $contrato->cliente->name ?? '' }} {{ $contrato->cliente->lastname ?? '' }}
                     </div>
                     <div class="prism-toggle">
-                        <a href="{{ url('cliente') }}/{{ $contrato->cliente_id }}"> <button class="btn btn-primary"><i
+                        <a href="{{ url('cliente') }}/{{ $contrato->clients_id }}"> <button class="btn btn-primary"><i
                                     class="bi bi-arrow-90deg-left"></i></button></a>
                     </div>
                 </div>
