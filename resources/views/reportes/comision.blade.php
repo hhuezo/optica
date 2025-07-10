@@ -14,7 +14,7 @@
         table {
             width: 100%;
             border-collapse: collapse;
-            margin-top: 20px;
+            margin-top: 10px;
             font-family: Arial, sans-serif;
         }
 
@@ -26,7 +26,7 @@
         th,
         td {
             border: 1px solid #ccc;
-            padding: 8px 12px;
+            padding: 6px 10px;
             text-align: left;
         }
 
@@ -68,7 +68,7 @@
     <table width="100%" border="0">
         <tr style="background-color: #ffffff;">
             <td style="border: 0">
-                <img src="{{ public_path('imagenes/logo.jpg') }}" width="100px">
+                <img src="{{ public_path('assets/images/logo.jpg') }}" width="100px">
             </td>
             <td style="border: 0;text-align: left">
                 <span class="Estilo2">Reporte de Comisiones</span>
@@ -104,6 +104,8 @@
             <tr>
                 <th>Contrato</th>
                 <th>Fecha</th>
+                <th>Cliente</th>
+                <th>Empresa</th>
                 <th>Monto</th>
                 <th>Monto sin iva</th>
                 <th>Subtotal</th>
@@ -111,6 +113,8 @@
         </thead>
         <tbody>
             @php($total = 0)
+            @php($totalMonto = 0)
+            @php($totalMontoSinIva = 0)
             @if ($ventas->count() > 0)
 
                 @foreach ($ventas as $item)
@@ -118,7 +122,9 @@
                     @php($subtotal = $sinIva * ($sales_percentage / 100))
                     <tr>
                         <td>{{ $item->number }}</td>
-                        <td>{{ $item->date }}</td>
+                        <td> {{ $item->date ? date('d/m/Y', strtotime($item->date)) : '' }}</td>
+                        <td>{{ $item->client }}</td>
+                        <td>{{ $item->company }}</td>
                         <td style="text-align: right">
                             ${{ number_format($item->amount, 2) }}
                         </td>
@@ -131,11 +137,13 @@
 
                     </tr>
                     @php($total += $subtotal)
+                    @php($totalMonto += $item->amount)
+                    @php($totalMontoSinIva += $sinIva)
                 @endforeach
                 @php($total_general += $total)
             @else
                 <tr>
-                    <td colspan="5" class="empty">
+                    <td colspan="7" class="empty">
                         <div align="center">Contrato vac&iacute;o</div>
                     </td>
                 </tr>
@@ -145,6 +153,12 @@
                 <td colspan="4">
                     <div align="center"><strong>TOTAL </strong>
                     </div>
+                </td>
+                <td style="text-align: right">
+                    <strong>${{ number_format($totalMonto, 2) }} </strong>
+                </td>
+                <td style="text-align: right">
+                    <strong>${{ number_format($totalMontoSinIva, 2) }} </strong>
                 </td>
                 <td style="text-align: right">
                     <strong>${{ number_format($total, 2) }} </strong>
@@ -163,6 +177,8 @@
             <tr>
                 <th>Recibo</th>
                 <th>Fecha</th>
+                <th>Cliente</th>
+                <th>Empresa</th>
                 <th>Monto</th>
                 <th>Monto sin iva</th>
                 <th>Subtotal</th>
@@ -170,6 +186,8 @@
         </thead>
         <tbody>
             @php($total = 0)
+            @php($totalMonto = 0)
+            @php($totalMontoSinIva = 0)
             @if ($recaudado->count() > 0)
 
                 @foreach ($recaudado as $item)
@@ -177,7 +195,9 @@
                     @php($subtotal = $sinIva * ($collection_percentage / 100))
                     <tr>
                         <td>{{ $item->number }}</td>
-                        <td>{{ $item->date }}</td>
+                        <td> {{ $item->date ? date('d/m/Y', strtotime($item->date)) : '' }}</td>
+                        <td>{{ $item->client }}</td>
+                        <td>{{ $item->company }}</td>
                         <td style="text-align: right">
                             ${{ number_format($item->amount, 2) }}
                         </td>
@@ -190,11 +210,13 @@
 
                     </tr>
                     @php($total += $subtotal)
+                    @php($totalMonto += $item->amount)
+                    @php($totalMontoSinIva += $sinIva)
                 @endforeach
                 @php($total_general += $total)
             @else
                 <tr>
-                    <td colspan="5" class="empty">
+                    <td colspan="7" class="empty">
                         <div align="center">Contrato vac&iacute;o</div>
                     </td>
                 </tr>
@@ -204,6 +226,12 @@
                 <td colspan="4">
                     <div align="center"><strong>TOTAL </strong>
                     </div>
+                </td>
+                <td style="text-align: right">
+                    <strong>${{ number_format($totalMonto, 2) }} </strong>
+                </td>
+                <td style="text-align: right">
+                    <strong>${{ number_format($totalMontoSinIva, 2) }} </strong>
                 </td>
                 <td style="text-align: right">
                     <strong>${{ number_format($total, 2) }} </strong>
@@ -222,6 +250,8 @@
             <tr>
                 <th>Recibo</th>
                 <th>Fecha</th>
+                <th>Cliente</th>
+                <th>Empresa</th>
                 <th>Monto</th>
                 <th>Monto sin iva</th>
                 <th>Subtotal</th>
@@ -229,6 +259,8 @@
         </thead>
         <tbody>
             @php($total = 0)
+            @php($totalMonto = 0)
+            @php($totalMontoSinIva = 0)
             @if ($ventas_anticipadas->count() > 0)
 
                 @foreach ($ventas_anticipadas as $item)
@@ -236,7 +268,9 @@
                     @php($subtotal = $sinIva * 0.04)
                     <tr>
                         <td>{{ $item->number }}</td>
-                        <td>{{ $item->date }}</td>
+                        <td> {{ $item->date ? date('d/m/Y', strtotime($item->date)) : '' }}</td>
+                        <td>{{ $item->client }}</td>
+                        <td>{{ $item->company }}</td>
                         <td style="text-align: right">
                             ${{ number_format($item->amount, 2) }}
                         </td>
@@ -249,18 +283,27 @@
 
                     </tr>
                     @php($total += $subtotal)
+                    @php($totalMonto += $item->amount)
+                    @php($totalMontoSinIva += $sinIva)
                 @endforeach
                 @php($total_general += $total)
             @else
                 <tr>
-                    <td colspan="5" class="empty">
+                    <td colspan="7" class="empty">
                         <div align="center">Contrato vac&iacute;o</div>
                     </td>
                 </tr>
             @endif
-
             <tr>
-                <td colspan="4"><strong>TOTAL </strong>
+                <td colspan="4">
+                    <div align="center"><strong>TOTAL </strong>
+                    </div>
+                </td>
+                <td style="text-align: right">
+                    <strong>${{ number_format($totalMonto, 2) }} </strong>
+                </td>
+                <td style="text-align: right">
+                    <strong>${{ number_format($totalMontoSinIva, 2) }} </strong>
                 </td>
                 <td style="text-align: right">
                     <strong>${{ number_format($total, 2) }} </strong>

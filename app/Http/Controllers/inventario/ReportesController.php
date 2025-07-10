@@ -229,7 +229,15 @@ class ReportesController extends Controller
 
         $ventas = DB::table('contracts')
             ->join('contract_employees', 'contracts.id', '=', 'contract_employees.contracts_id')
-            ->select('contracts.number', 'contracts.date', 'contracts.amount')
+            ->join('clients', 'clients.id', '=', 'contracts.clients_id')
+            ->join('company', 'company.id', '=', 'clients.company_id')
+            ->select(
+                'contracts.number',
+                'contracts.date',
+                'contracts.amount',
+                'company.name as company',
+                DB::raw('concat(clients.name," ",clients.lastname) as client')
+            )
             ->where('contract_employees.users_id', $id)
             ->whereBetween('contracts.date', [$fechaInicio, $fechaFinal])
             ->get();
@@ -238,18 +246,36 @@ class ReportesController extends Controller
         $recaudado = DB::table('receipts')
             ->join('contracts', 'receipts.contracts_id', '=', 'contracts.id')
             ->join('contract_employees', 'contracts.id', '=', 'contract_employees.contracts_id')
-            ->select('receipts.number', 'receipts.date', 'receipts.amount')
+            ->join('clients', 'clients.id', '=', 'contracts.clients_id')
+            ->join('company', 'company.id', '=', 'clients.company_id')
+            ->select(
+                'contracts.number',
+                'contracts.date',
+                'contracts.amount',
+                'company.name as company',
+                DB::raw('concat(clients.name," ",clients.lastname) as client')
+            )
             ->where('contract_employees.users_id', $id)
             ->whereBetween('receipts.date', [$fechaInicio, $fechaFinal])
             ->get();
 
         $ventas_anticipadas = DB::table('contracts')
             ->join('contract_employees', 'contracts.id', '=', 'contract_employees.contracts_id')
-            ->select('contracts.number', 'contracts.date', 'contracts.amount')
+            ->join('clients', 'clients.id', '=', 'contracts.clients_id')
+            ->join('company', 'company.id', '=', 'clients.company_id')
+            ->select(
+                'contracts.number',
+                'contracts.date',
+                'contracts.amount',
+                'company.name as company',
+                DB::raw('concat(clients.name," ",clients.lastname) as client')
+            )
             ->where('contract_employees.users_id', $id)
             ->where('contracts.advance', '>', 0)
             ->whereBetween('contracts.date', [$fechaInicio, $fechaFinal])
             ->get();
+
+        //return view('reportes.comision', compact('vendedor', 'ventas', 'recaudado', 'ventas_anticipadas', 'fechaInicio', 'fechaFinal', 'sales_percentage', 'collection_percentage'));
 
         if ($exportar == 1) {
             $pdf = Pdf::loadView('reportes.comision', compact('vendedor', 'ventas', 'recaudado', 'ventas_anticipadas', 'fechaInicio', 'fechaFinal', 'sales_percentage', 'collection_percentage'));

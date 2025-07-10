@@ -42,6 +42,7 @@
                                     <th>#</th>
                                     <th>Fecha servicio</th>
                                     <th>Cliente</th>
+                                    <th>Empresa</th>
                                     <th>Cantidad</th>
                                     <th>Vendedor</th>
                                     <th>Fecha último pago</th>
@@ -66,6 +67,7 @@
                                     <th><input type="text" class="form-control form-control-sm" placeholder="Buscar" /></th>
                                     <th><input type="text" class="form-control form-control-sm" placeholder="Buscar" /></th>
                                     <th><input type="text" class="form-control form-control-sm" placeholder="Buscar" /></th>
+                                    <th><input type="text" class="form-control form-control-sm" placeholder="Buscar" /></th>
                                 </tr>
                             </tfoot>
 
@@ -76,6 +78,7 @@
                                         <td>{{ $item->number }}</td>
                                         <td>{{ $item->date }}</td>
                                         <td>{{ $item->client }}</td>
+                                        <td>{{ $item->company }}</td>
                                         <td class="text-end">
                                             {{ $item->amount !== null ? '$' . number_format($item->amount, 2) : '' }}</td>
                                         <td>{{ $item->seller }}</td>
@@ -85,35 +88,35 @@
 
                                         <td class="text-end">
                                             @if ($item->dias_desde_ultimo_pago < 30)
-                                                {{ $item->monthly_payment !== null ? '$' . number_format($item->monthly_payment, 2) : '' }}
+                                                {{ $item->remaining !== null ? '$' . number_format($item->remaining, 2) : '' }}
                                             @endif
                                         </td>
                                         <td class="text-end">
                                             @if ($item->dias_desde_ultimo_pago >= 30 && $item->dias_desde_ultimo_pago < 60)
-                                                {{ $item->monthly_payment !== null ? '$' . number_format($item->monthly_payment, 2) : '' }}
+                                                {{ $item->remaining !== null ? '$' . number_format($item->remaining, 2) : '' }}
                                             @endif
                                         </td>
 
                                         <td class="text-end">
                                             @if ($item->dias_desde_ultimo_pago >= 60 && $item->dias_desde_ultimo_pago < 90)
-                                                {{ $item->monthly_payment !== null ? '$' . number_format($item->monthly_payment, 2) : '' }}
+                                                {{ $item->remaining !== null ? '$' . number_format($item->remaining, 2) : '' }}
                                             @endif
                                         </td>
 
                                         <td class="text-end">
                                             @if ($item->dias_desde_ultimo_pago >= 90 && $item->dias_desde_ultimo_pago < 120)
-                                                {{ $item->monthly_payment !== null ? '$' . number_format($item->monthly_payment, 2) : '' }}
+                                                {{ $item->remaining !== null ? '$' . number_format($item->remaining, 2) : '' }}
                                             @endif
                                         </td>
                                         <td class="text-end">
                                             @if ($item->dias_desde_ultimo_pago == 120)
-                                                {{ $item->monthly_payment !== null ? '$' . number_format($item->monthly_payment, 2) : '' }}
+                                                {{ $item->remaining !== null ? '$' . number_format($item->remaining, 2) : '' }}
                                             @endif
                                         </td>
 
                                         <td class="text-end">
                                             @if ($item->dias_desde_ultimo_pago > 120)
-                                                {{ $item->monthly_payment !== null ? '$' . number_format($item->monthly_payment, 2) : '' }}
+                                                {{ $item->remaining !== null ? '$' . number_format($item->remaining, 2) : '' }}
                                             @endif
                                         </td>
 
@@ -282,10 +285,10 @@
                     infoEmpty: "Mostrando 0 a 0 de 0 registros",
                     infoFiltered: "(filtrado de _MAX_ registros totales)",
                     paginate: {
-                        first: "Primero",
-                        previous: "Anterior",
-                        next: "Siguiente",
-                        last: "Último"
+                        first: "<<",
+                        previous: "<",
+                        next: ">",
+                        last: ">>"
                     },
                     aria: {
                         sortAscending: ": activar para ordenar ascendente",
