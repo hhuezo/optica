@@ -22,6 +22,14 @@ class ContratoDetalle extends Model
         'contracts_id',
         'products_id',
         'price',
+        'right_eye_sphere',
+        'right_eye_cylinder',
+        'right_eye_axis',
+        'right_eye_addition',
+        'left_eye_sphere',
+        'left_eye_cylinder',
+        'left_eye_axis',
+        'left_eye_addition',
     ];
 
 

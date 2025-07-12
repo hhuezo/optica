@@ -33,6 +33,9 @@ class Contrato extends Model
         'statuses_id',
         'warehouses_id',
         'advance',
+        'diagnostic',
+        'service_for',
+        'observation'
     ];
 
 

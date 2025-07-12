@@ -53,7 +53,7 @@
                     @endif
 
                     <div class="table-responsive">
-                        <table id="datatable-basic" class="table table-striped text-nowrap w-100">
+                        <table  class="table table-striped text-nowrap w-100">
                             <thead class="table-dark">
                                 <tr>
                                     <th>Número</th>
@@ -76,13 +76,13 @@
                                                     &nbsp;<i class="bi bi-card-list"></i>&nbsp;</button></a>
 
                                             &nbsp;
-                                            <a href="{{ url('cliente/contrato_reporte') }}/{{ $item->id }}" target="_blank"> <button
-                                                    class="btn btn-sm btn-info btn-wave">
+                                            <a href="{{ url('cliente/contrato_reporte') }}/{{ $item->id }}"
+                                                target="_blank"> <button class="btn btn-sm btn-info btn-wave">
                                                     &nbsp;<i class="bi bi-file-earmark-pdf-fill"></i>&nbsp;</button></a>
 
-                                                     &nbsp;
-                                            <a href="{{ url('cliente/contrato_receta') }}/{{ $item->id }}" target="_blank"> <button
-                                                    class="btn btn-sm btn-success btn-wave">
+                                            &nbsp;
+                                            <a href="{{ url('cliente/contrato_receta') }}/{{ $item->id }}"
+                                                target="_blank"> <button class="btn btn-sm btn-success btn-wave">
                                                     &nbsp;<i class="bi bi-card-checklist"></i>&nbsp;</button></a>
                                         </td>
                                     </tr>
@@ -93,7 +93,7 @@
                 </div>
 
                 <div class="card-footer" style="text-align: center">
-                    <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#modal-create">+</button>
+                   <a href="{{url('cliente/contrato_create')}}/{{$cliente->id}}"> <button class="btn btn-success">+</button></a>
                 </div>
 
             </div>
@@ -103,7 +103,7 @@
 
 
     <div class="modal fade" id="modal-create" tabindex="-1" aria-labelledby="exampleModalLgLabel" aria-hidden="true">
-        <div class="modal-dialog modal-lg">
+        <div class="modal-dialog modal-xl">
             <div class="modal-content">
                 <div class="modal-header">
                     <h6 class="modal-title" id="exampleModalLgLabel">Nuevo contrato</h6>
@@ -113,36 +113,18 @@
                     @csrf
                     <div class="modal-body">
                         <div class="row gy-4">
-                            <div class="col-6">
+                            <div class="col-4">
                                 <label class="form-label">Fecha</label>
                                 <input type="date" class="form-control" name="date" value="{{ date('Y-m-d') }}"
                                     value="{{ old('date') }}" required>
                             </div>
-                            <div class="col-6">
+                            <div class="col-4">
                                 <label class="form-label">Número</label>
                                 <input type="text" class="form-control" name="number" value="{{ old('number') }}"
                                     required>
                             </div>
 
-
-                            <div class="col-6">
-                                <label for="input-label" class="form-label">Tipo pago</label>
-                                <select name="payment_type" class="form-select">
-                                    <option value="CONTADO">Contado</option>
-                                    <option value="CREDITO">Crédito</option>
-                                </select>
-                            </div>
-
-
-                            <div class="col-6">
-                                <label for="input-label" class="form-label">Plazo</label>
-                                <input type="number" step="1" class="form-control" name="term" id="term"
-                                    value="{{ old('term') }}" required>
-                            </div>
-
-
-
-                            <div class="col-6">
+                             <div class="col-4">
                                 <label for="input-label" class="form-label">Bodega</label>
                                 <select name="warehouses_id" class="form-select" onchange="getProductos(this.value)"
                                     required>
@@ -155,6 +137,40 @@
                                     @endforeach
                                 </select>
 
+                            </div>
+
+
+                            <div class="col-3">
+                                <label for="input-label" class="form-label">Tipo pago</label>
+                                <select name="payment_type" class="form-select">
+                                    <option value="CONTADO">Contado</option>
+                                    <option value="CREDITO">Crédito</option>
+                                </select>
+                            </div>
+
+
+                            <div class="col-3">
+                                <label for="input-label" class="form-label">Plazo</label>
+                                <input type="number" step="1" class="form-control" name="term" id="term"
+                                    value="{{ old('term') }}" required>
+                            </div>
+
+
+                             <div class="col-6">
+                                <label for="input-label" class="form-label">Servicio para</label>
+                                <input type="text"  class="form-control" name="service_for"
+                                    value="{{ old('service_for') }}" onblur="this.value = this.value.toUpperCase()" required>
+                            </div>
+
+                            <div class="col-6">
+                                <label for="input-label" class="form-label">Diagnóstico</label>
+                                <textarea class="form-control" name="diagnostic">{{ old('diagnostic') }}</textarea>
+
+                            </div>
+
+                              <div class="col-6">
+                                <label for="input-label" class="form-label">Observaciones</label>
+                                <textarea class="form-control" name="observation">{{ old('observation') }}</textarea>
                             </div>
                         </div>
                     </div>

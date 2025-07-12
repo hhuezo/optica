@@ -58,16 +58,15 @@ Route::middleware(['auth'])->group(function () {
     Route::get('cliente/contrato_show/{id}', [ClienteController::class, 'contrato_show'])->name('cliente.contrato.show');
 
 
-    //eliminar
+
     Route::get('cliente/contrato_create/{id}', [ClienteController::class, 'contrato_create']);
+    Route::post('cliente/contrato_store/{id}', [ClienteController::class, 'contrato_store'])->name('cliente.contrato.store');
+    Route::put('cliente/contrato_store/{id}', [ClienteController::class, 'contrato_update'])->name('cliente.contrato.update');
 
 
-
-    Route::post('cliente/validar_contrato_store/{id}', [ClienteController::class, 'validar_contrato_store']);
     Route::post('cliente/contrato_detalle_store/{id}', [ClienteController::class, 'contrato_detalle_store'])->name('cliente.contrato_detalle.store');
     Route::delete('cliente/contrato_detalle_delete/{id}', [ClienteController::class, 'contrato_detalle_delete'])->name('cliente.contrato_detalle.delete');
-    Route::post('cliente/contrato_store/{id}', [ClienteController::class, 'contrato_store'])->name('cliente.contrato.store');
-    Route::post('cliente/contrato_store/{id}', [ClienteController::class, 'contrato_store'])->name('cliente.contrato.store');
+
     Route::post('cliente/contrato_procesar/{id}', [ClienteController::class, 'processContract']);
     Route::post('cliente/contrato_empleado_store/{id}', [ClienteController::class, 'contrato_empleado_store']);
     Route::post('cliente/contrato_abono/{id}', [ClienteController::class, 'contrato_abono']);

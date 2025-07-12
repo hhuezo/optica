@@ -32,11 +32,29 @@ class DatabaseSeeder extends Seeder
             $table->string('reference_name', 150)->nullable();
         });
 
+        Schema::table('contracts', function (Blueprint $table) {
+            $table->string('diagnostic', 255)->nullable();
+            $table->string('service_for', 150)->nullable();
+            $table->string('observation', 150)->nullable();
+        });
+
+        Schema::table('contract_details', function (Blueprint $table) {
+            $table->string('right_eye_sphere', 30)->nullable();
+            $table->string('right_eye_cylinder', 30)->nullable();
+            $table->string('right_eye_axis', 30)->nullable();
+            $table->string('right_eye_addition', 30)->nullable();
+            $table->string('left_eye_sphere', 30)->nullable();
+            $table->string('left_eye_cylinder', 30)->nullable();
+            $table->string('left_eye_axis', 30)->nullable();
+            $table->string('left_eye_addition', 30)->nullable();
+        });
+
         $_users = DB::table('users_')->get();
 
 
         foreach ($_users as $_user) {
             $user = new User();
+            $user->id = $_user->id;
             $user->name = $_user->name;
             $user->last_name = $_user->last_name;
             $user->email = $_user->user_name . '@mail.com';
@@ -91,6 +109,47 @@ class DatabaseSeeder extends Seeder
         foreach ($users as $_user) {
             $_user->assignRole($role);
         }
+
+
+
+
+
+        // Eliminar las claves foráneas erróneas
+        Schema::table('contract_employees', function (Blueprint $table) {
+            $table->dropForeign('contract_employees_users_users_id');
+        });
+
+        Schema::table('documents', function (Blueprint $table) {
+            $table->dropForeign('documents_users_users_id');
+        });
+
+        //cambiando a big int
+        Schema::table('contract_employees', function (Blueprint $table) {
+            $table->unsignedBigInteger('users_id')->change();
+        });
+
+        Schema::table('documents', function (Blueprint $table) {
+            $table->unsignedBigInteger('users_id')->change();
+        });
+
+        // Crear las claves foráneas correctas apuntando a users(id)
+        Schema::table('contract_employees', function (Blueprint $table) {
+            $table->foreign('users_id')
+                ->references('id')
+                ->on('users')
+                ->onUpdate('cascade')
+                ->onDelete('restrict');
+        });
+
+        Schema::table('documents', function (Blueprint $table) {
+            $table->foreign('users_id')
+                ->references('id')
+                ->on('users')
+                ->onUpdate('cascade')
+                ->onDelete('restrict');
+        });
+
+
 
         //deshabilitar reposision
         TipoDocumento::where('id', 4)->update(['statuses_id' => 3]);

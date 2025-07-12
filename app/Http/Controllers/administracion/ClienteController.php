@@ -20,7 +20,9 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rule;
 use Yajra\DataTables\Facades\DataTables;
 
 class ClienteController extends Controller
@@ -303,17 +305,15 @@ class ClienteController extends Controller
     public function contrato_store(string $id, Request $request)
     {
         $validated = $request->validate([
-            'number' => 'required|string|max:255|unique:contracts,number',
             'date' => 'required|date',
-            'payment_type' => 'required|in:CONTADO,CREDITO',
+            'number' => 'required|string|max:255|unique:contracts,number',
             'warehouses_id' => 'required|exists:warehouses,id',
-            'term' => 'required|integer|min:1',
-            /*'products_id' => 'required|exists:products,id',
-            'price' => 'required|numeric|min:0.01',
-            'quantity' => 'required|numeric|min:1',
-            'discount' => 'nullable|numeric|min:0|max:100',
-            'right_eye_graduation' => 'required|string|max:255',
-            'left_eye_graduation' => 'required|string|max:255',*/
+            'payment_type' => 'required|in:CONTADO,CREDITO',
+            'term' => 'required_if:payment_type,CREDITO|nullable|integer|min:1',
+            //'advance' => 'nullable|numeric|gt:0',
+            'diagnostic' => 'nullable|string|max:255',
+            'service_for' => 'nullable|string|max:150',
+            'observation' => 'nullable|string|max:150',
         ], [
             'number.required' => 'El campo número es obligatorio.',
             'number.unique' => 'El valor del campo número ya está en uso.',
@@ -322,81 +322,87 @@ class ClienteController extends Controller
             'payment_type.in' => 'El tipo de pago seleccionado no es válido.',
             'warehouses_id.required' => 'Debe seleccionar una bodega.',
             'warehouses_id.exists' => 'La bodega seleccionada no existe.',
-            'term.required' => 'El campo plazo es obligatorio.',
+            'term.required_if' => 'Debe especificar el plazo si el tipo de pago es crédito.',
             'term.integer' => 'El plazo debe ser un número entero.',
             'term.min' => 'El plazo debe ser al menos 1.',
-            'products_id.required' => 'Debe seleccionar un producto.',
-            'products_id.exists' => 'El producto seleccionado no existe.',
-            'price.required' => 'El precio es obligatorio.',
-            'price.numeric' => 'El precio debe ser un número.',
-            'price.min' => 'El precio debe ser mayor a 0.',
-            'quantity.required' => 'La cantidad es obligatoria.',
-            'quantity.numeric' => 'La cantidad debe ser un número.',
-            'quantity.min' => 'La cantidad mínima es 1.',
-            'discount.required' => 'El descuento es obligatorio.',
-            'discount.numeric' => 'El descuento debe ser un número.',
-            'discount.min' => 'El descuento no puede ser menor a 0.',
-            'discount.max' => 'El descuento no puede ser mayor a 100.',
-            'right_eye_graduation.required' => 'El campo graduación ojo derecho es obligatorio.',
-            'left_eye_graduation.required' => 'El campo graduación ojo izquierdo es obligatorio.',
+            'advance.numeric' => 'El campo adelanto debe ser un número válido.',
+            'advance.gt' => 'El adelanto debe ser mayor a cero si se proporciona.',
+            'diagnostic.string' => 'El diagnóstico debe ser una cadena de texto.',
+            'diagnostic.max' => 'El diagnóstico no debe exceder los 255 caracteres.',
+            'service_for.string' => 'El campo "servicio para" debe ser texto.',
+            'service_for.max' => 'El campo "servicio para" no debe exceder los 150 caracteres.',
+            'observation.string' => 'La observación debe ser una cadena de texto.',
+            'observation.max' => 'La observación no debe exceder los 150 caracteres.',
         ]);
 
 
-        //try {
-        $contrato = new Contrato();
-        $contrato->number = $validated['number'];
-        $contrato->date = $validated['date'];
-        $contrato->term = $validated['term'];
-        $contrato->payment_type = $validated['payment_type'];
-        $contrato->clients_id = $id;
-        $contrato->warehouses_id = $validated['warehouses_id'];
 
-        $montoTotal = 0.00;
-        $contrato->amount = $montoTotal;
-        $contrato->remaining = $montoTotal;
-        $contrato->advance = 0;
-        $contrato->monthly_payment = $validated['payment_type'] === 'CREDITO'
-            ? round($montoTotal / max($validated['term'], 1), 2)
-            : 0;
-        $contrato->statuses_id = 4;
-        $contrato->save();
-
-        /*$detalle = new ContratoDetalle();
-            $detalle->contracts_id = $contrato->id;
-            $detalle->products_id = $validated['products_id'];
-            $detalle->quantity = $validated['quantity'];
-            $detalle->price = $validated['price'];
-            $detalle->discount = $validated['discount'] ?? 0.00;
-            $detalle->right_eye_graduation = $validated['right_eye_graduation'];
-            $detalle->left_eye_graduation = $validated['left_eye_graduation'];
-            $detalle->save();*/
+        if ($validated['payment_type'] === 'CONTADO' && !empty($validated['term'])) {
+            return back()->withErrors([
+                'term' => 'No debe ingresar un plazo cuando el tipo de pago es contado.',
+            ])->withInput();
+        }
 
 
-        return redirect()->route('cliente.contrato.show', $contrato->id)->with('success', 'Contrato agregado correctamente.');
-        /*} catch (\Throwable $e) {
+        try {
+            $contrato = new Contrato();
+
+            $contrato->number = $request->input('number');
+            $contrato->date = $request->input('date');
+            $contrato->term = $request->input('term');
+            $contrato->payment_type = $request->input('payment_type');
+            $contrato->clients_id = $id;
+            $contrato->warehouses_id = $request->input('warehouses_id');
+
+            $montoTotal = 0.00;
+            $contrato->amount = $montoTotal;
+            $contrato->remaining = $montoTotal;
+            $contrato->advance = 0;
+
+            $contrato->monthly_payment = $request->payment_type === 'CREDITO'
+                ? round($montoTotal / max((int) $request->term, 1), 2)
+                : 0;
+
+            $contrato->statuses_id = 4;
+
+            $contrato->service_for = $request->input('service_for');
+            $contrato->diagnostic = $request->input('diagnostic');
+            $contrato->observation = $request->input('observation');
+
+            $contrato->save();
+
+            return Redirect::to('cliente/contrato_show/' . $contrato->id . '?tab=2')->with('success', 'Contrato agregado correctamente.');
+        } catch (\Throwable $e) {
 
             // Opcional: log del error
             Log::error('Error al guardar contrato: ' . $e->getMessage());
 
             return redirect()->back()->with('error', 'Error al guardar el contrato. Intente nuevamente.');
-        }*/
+        }
     }
 
-    public function contrato_detalle_store(string $id, Request $request)
+    public function contrato_update(string $id, Request $request)
     {
-        $validator = Validator::make($request->all(), [
-            'contracts_id' => 'required|integer|exists:contracts,id',
-            //'number' => 'required|string|max:255',
-            //'date' => 'required|date',
-            //'payment_type' => 'required|in:CONTADO,CREDITO',
-            //'warehouses_id' => 'required|exists:warehouses,id',
-            //'term' => 'required|integer|min:1',
-            'products_id' => 'required|exists:products,id',
-            'price' => 'required|numeric|min:0.01',
-            'quantity' => 'required|numeric|min:1',
-            //'discount' => 'required|numeric|min:0|max:100',
-            'right_eye_graduation' => 'required|string|max:255',
-            'left_eye_graduation' => 'required|string|max:255',
+        $exists = Contrato::where('id', $id)->exists();
+        if (!$exists) {
+            return redirect()->back()->withErrors(['Contrato no encontrado.']);
+        }
+
+        $validated = $request->validate([
+            'date' => 'required|date',
+            'number' => [
+                'required',
+                'string',
+                'max:255',
+                Rule::unique('contracts', 'number')->ignore($id)
+            ],
+            'warehouses_id' => 'required|exists:warehouses,id',
+            'payment_type' => 'required|in:CONTADO,CREDITO',
+            'term' => 'required_if:payment_type,CREDITO|nullable|integer|min:1',
+            //'advance' => 'nullable|numeric|gt:0',
+            'diagnostic' => 'nullable|string|max:255',
+            'service_for' => 'nullable|string|max:150',
+            'observation' => 'nullable|string|max:150',
         ], [
             'number.required' => 'El campo número es obligatorio.',
             'number.unique' => 'El valor del campo número ya está en uso.',
@@ -405,24 +411,116 @@ class ClienteController extends Controller
             'payment_type.in' => 'El tipo de pago seleccionado no es válido.',
             'warehouses_id.required' => 'Debe seleccionar una bodega.',
             'warehouses_id.exists' => 'La bodega seleccionada no existe.',
-            'term.required' => 'El campo plazo es obligatorio.',
+            'term.required_if' => 'Debe especificar el plazo si el tipo de pago es crédito.',
             'term.integer' => 'El plazo debe ser un número entero.',
             'term.min' => 'El plazo debe ser al menos 1.',
+            'advance.numeric' => 'El campo adelanto debe ser un número válido.',
+            'advance.gt' => 'El adelanto debe ser mayor a cero si se proporciona.',
+            'diagnostic.string' => 'El diagnóstico debe ser una cadena de texto.',
+            'diagnostic.max' => 'El diagnóstico no debe exceder los 255 caracteres.',
+            'service_for.string' => 'El campo "servicio para" debe ser texto.',
+            'service_for.max' => 'El campo "servicio para" no debe exceder los 150 caracteres.',
+            'observation.string' => 'La observación debe ser una cadena de texto.',
+            'observation.max' => 'La observación no debe exceder los 150 caracteres.',
+        ]);
+
+
+        if ($validated['payment_type'] === 'CONTADO' && !empty($validated['term'])) {
+            return back()->withErrors([
+                'term' => 'No debe ingresar un plazo cuando el tipo de pago es contado.',
+            ])->withInput();
+        }
+
+
+        try {
+            $contrato = Contrato::findOrFail($id);
+
+            $contrato->number = $request->number;
+            $contrato->date = $request->date;
+            $contrato->term = $request->term;
+            $contrato->payment_type = $request->payment_type;
+            $contrato->warehouses_id = $request->warehouses_id;
+
+            /*$montoTotal = 0.00;
+            $contrato->amount = $montoTotal;
+            $contrato->remaining = $montoTotal;
+
+
+            $contrato->monthly_payment = $request->payment_type === 'CREDITO'
+                ? round($montoTotal / max((int) $request->term, 1), 2)
+                : 0;*/
+
+            //$contrato->statuses_id = 4;
+
+            $contrato->service_for = $request->service_for;
+            $contrato->diagnostic = $request->diagnostic;
+            $contrato->observation = $request->observation;
+
+            $contrato->save();
+
+            return Redirect::to('cliente/contrato_show/' . $contrato->id . '?tab=2');
+
+            //return redirect()->route('cliente.contrato.show', $contrato->id)->with('success', 'Contrato agregado correctamente.');
+        } catch (\Throwable $e) {
+
+            // Opcional: log del error
+            Log::error('Error al guardar contrato: ' . $e->getMessage());
+
+            return redirect()->back()->with('error', 'Error al guardar el contrato. Intente nuevamente.');
+        }
+    }
+
+    public function contrato_detalle_store(string $id, Request $request)
+    {
+        // Validar que el contrato exista
+        $contratoExiste = Contrato::where('id', $id)->exists();
+        if (!$contratoExiste) {
+            return response()->json(['success' => false, 'message' => 'El contrato no existe.'], 404);
+        }
+
+        $validator = Validator::make($request->all(), [
+            'products_id' => 'required|exists:products,id',
+            'price' => 'required|numeric|min:0.01',
+            'quantity' => 'required|numeric|min:1',
+
+            // Campos para ojo derecho
+            'right_eye_sphere'     => 'nullable|string|max:30',
+            'right_eye_cylinder'   => 'nullable|string|max:30',
+            'right_eye_axis'       => 'nullable|string|max:30',
+            'right_eye_graduation' => 'nullable|string|max:30',
+
+            // Campos para ojo izquierdo
+            'left_eye_sphere'     => 'nullable|string|max:30',
+            'left_eye_cylinder'   => 'nullable|string|max:30',
+            'left_eye_axis'       => 'nullable|string|max:30',
+            'left_eye_graduation' => 'nullable|string|max:30',
+
+        ], [
+
             'products_id.required' => 'Debe seleccionar un producto.',
             'products_id.exists' => 'El producto seleccionado no existe.',
+
             'price.required' => 'El precio es obligatorio.',
             'price.numeric' => 'El precio debe ser un número.',
             'price.min' => 'El precio debe ser mayor a 0.',
+
             'quantity.required' => 'La cantidad es obligatoria.',
             'quantity.numeric' => 'La cantidad debe ser un número.',
             'quantity.min' => 'La cantidad mínima es 1.',
-            'discount.required' => 'El descuento es obligatorio.',
-            'discount.numeric' => 'El descuento debe ser un número.',
-            'discount.min' => 'El descuento no puede ser menor a 0.',
-            'discount.max' => 'El descuento no puede ser mayor a 100.',
-            'right_eye_graduation.required' => 'El campo graduación ojo derecho es obligatorio.',
-            'left_eye_graduation.required' => 'El campo graduación ojo izquierdo es obligatorio.',
+
+            // Mensajes opcionales para los campos de graduación, si deseas agregar
+            'right_eye_sphere.max' => 'La esfera del ojo derecho no debe exceder los 30 caracteres.',
+            'right_eye_cylinder.max' => 'El cilindro del ojo derecho no debe exceder los 30 caracteres.',
+            'right_eye_axis.max' => 'El eje del ojo derecho no debe exceder los 30 caracteres.',
+            'right_eye_graduation.max' => 'La adición del ojo derecho no debe exceder los 30 caracteres.',
+
+            'left_eye_sphere.max' => 'La esfera del ojo izquierdo no debe exceder los 30 caracteres.',
+            'left_eye_cylinder.max' => 'El cilindro del ojo izquierdo no debe exceder los 30 caracteres.',
+            'left_eye_axis.max' => 'El eje del ojo izquierdo no debe exceder los 30 caracteres.',
+            'left_eye_graduation.max' => 'La adición del ojo izquierdo no debe exceder los 30 caracteres.',
         ]);
+
+
 
 
         if ($validator->fails()) {
@@ -440,18 +538,32 @@ class ClienteController extends Controller
         try {
 
             $detalle = new ContratoDetalle();
-            $detalle->contracts_id = $request->contracts_id;
+            $detalle->contracts_id = $id;
             $detalle->products_id = $validated['products_id'];
             $detalle->quantity = $validated['quantity'];
             $detalle->price = $validated['price'];
             $detalle->discount = $request->discount ?? 0.00;
             $detalle->right_eye_graduation = $validated['right_eye_graduation'];
             $detalle->left_eye_graduation = $validated['left_eye_graduation'];
+
+            // Ojo derecho
+            $detalle->right_eye_sphere     = $validated['right_eye_sphere'] ?? null;
+            $detalle->right_eye_cylinder   = $validated['right_eye_cylinder'] ?? null;
+            $detalle->right_eye_axis       = $validated['right_eye_axis'] ?? null;
+            $detalle->right_eye_graduation = $validated['right_eye_graduation'] ?? null;
+
+            // Ojo izquierdo
+            $detalle->left_eye_sphere     = $validated['left_eye_sphere'] ?? null;
+            $detalle->left_eye_cylinder   = $validated['left_eye_cylinder'] ?? null;
+            $detalle->left_eye_axis       = $validated['left_eye_axis'] ?? null;
+            $detalle->left_eye_graduation = $validated['left_eye_graduation'] ?? null;
+
+
             $detalle->save();
 
             DB::commit();
 
-            return redirect()->route('cliente.contrato.show', $request->contracts_id)->with('success', 'Contrato agregado correctamente.');
+            return Redirect::to('cliente/contrato_show/' . $id . '?tab=3');
         } catch (\Throwable $e) {
             DB::rollBack();
 
@@ -484,57 +596,6 @@ class ClienteController extends Controller
 
 
 
-
-    public function validar_contrato_store(string $id, Request $request): JsonResponse
-    {
-        try {
-            $validated = $request->validate([
-                'number' => 'required|string|max:255|unique:contracts,number',
-                'date' => 'required|date',
-                'payment_type' => 'required|in:CONTADO,CREDITO',
-                'warehouses_id' => 'required|exists:warehouses,id',
-                'term' => 'required|integer|min:1',
-                'products_id' => 'required|exists:products,id',
-                'price' => 'required|numeric|min:0.01',
-                'quantity' => 'required|numeric|min:1',
-                'discount' => 'required|numeric|min:0|max:100',
-                'right_eye_graduation' => 'required|string|max:255',
-                'left_eye_graduation' => 'required|string|max:255',
-            ], [
-                'number.required' => 'El campo número es obligatorio.',
-                'number.unique' => 'El valor del campo número ya está en uso.',
-                'date.required' => 'La fecha es obligatoria.',
-                'payment_type.required' => 'Debe seleccionar un tipo de pago.',
-                'payment_type.in' => 'El tipo de pago seleccionado no es válido.',
-                'warehouses_id.required' => 'Debe seleccionar una bodega.',
-                'warehouses_id.exists' => 'La bodega seleccionada no existe.',
-                'term.required' => 'El campo plazo es obligatorio.',
-                'term.integer' => 'El plazo debe ser un número entero.',
-                'term.min' => 'El plazo debe ser al menos 1.',
-                'products_id.required' => 'Debe seleccionar un producto.',
-                'products_id.exists' => 'El producto seleccionado no existe.',
-                'price.required' => 'El precio es obligatorio.',
-                'price.numeric' => 'El precio debe ser un número.',
-                'price.min' => 'El precio debe ser mayor a 0.',
-                'quantity.required' => 'La cantidad es obligatoria.',
-                'quantity.numeric' => 'La cantidad debe ser un número.',
-                'quantity.min' => 'La cantidad mínima es 1.',
-                'discount.required' => 'El descuento es obligatorio.',
-                'discount.numeric' => 'El descuento debe ser un número.',
-                'discount.min' => 'El descuento no puede ser menor a 0.',
-                'discount.max' => 'El descuento no puede ser mayor a 100.',
-                'right_eye_graduation.required' => 'El campo graduación ojo derecho es obligatorio.',
-                'left_eye_graduation.required' => 'El campo graduación ojo izquierdo es obligatorio.',
-            ]);
-
-            return response()->json(['success' => true]);
-        } catch (\Illuminate\Validation\ValidationException $e) {
-            return response()->json([
-                'success' => false,
-                'errors' => $e->errors()
-            ], 422);
-        }
-    }
 
 
     public function contrato_show(Request $request, string $id)
@@ -618,7 +679,6 @@ class ClienteController extends Controller
 
     public function processContract(Request $request, $contractId)
     {
-
         $userId = auth()->user()->id;
 
         // 1. Actualizar monto del contrato
@@ -842,7 +902,7 @@ class ClienteController extends Controller
             }
 
             DB::commit();
-            return redirect('cliente/contrato_show/' . $contractId . '?tab=3')->with('success', 'Abono registrado correctamente.');
+            return redirect('cliente/contrato_show/' . $contractId . '?tab=4')->with('success', 'Abono registrado correctamente.');
         } catch (\Exception $e) {
             DB::rollBack();
             // Guardar el error en el log
@@ -852,7 +912,7 @@ class ClienteController extends Controller
                 'file' => $e->getFile(),
             ]);
 
-            return redirect('cliente/contrato_show/' . $contractId . '?tab=3')->with('error', 'Abono registrado no se registro.');
+            return redirect('cliente/contrato_show/' . $contractId . '?tab=4')->with('error', 'Abono registrado no se registro.');
         }
     }
 
