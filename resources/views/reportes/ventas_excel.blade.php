@@ -59,7 +59,7 @@
 
     <body>
 
-        <table width="100%" border="0">
+        <table width="100%">
             <tr style="background-color: #ffffff;">
 
                 <td style="border: 0">
@@ -71,7 +71,7 @@
             </tr>
         </table>
         <br>
-        <table>
+        <table border="1">
             <thead>
                 <tr>
                     <th>Fecha</th>

@@ -387,13 +387,14 @@ class ReportesController extends Controller
 
         $contratos = Contrato::whereBetween('date',[$fechaInicio,$fechaFinal])->get();
 
-        $exportar = $request->exportar ?? 0;
+        $exportar = $request->exportar ?? 1;
+
 
         if ($exportar == 1) {
-            return view('reportes.ventas_excel', compact('contratos', 'fechaInicio','fechaFinal'));
+            return view('reportes.ventas', compact('contratos', 'fechaInicio','fechaFinal'));
         }
 
-        return view('reportes.ventas', compact('contratos', 'fechaInicio','fechaFinal'));
+        return view('reportes.ventas_excel', compact('contratos', 'fechaInicio','fechaFinal'));
 
 
         /*
