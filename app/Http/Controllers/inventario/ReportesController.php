@@ -378,4 +378,52 @@ class ReportesController extends Controller
 
         return view('reportes.existencia', compact('datos', 'bodegas'));
     }
+
+    public function ventas(Request $request)
+    {
+
+        $fechaInicio = $request->fechaInicio ?? Carbon::now()->startOfMonth()->toDateString();
+        $fechaFinal = $request->fechaFinal ?? Carbon::now()->endOfMonth()->toDateString();
+
+        $contratos = Contrato::whereBetween('date',[$fechaInicio,$fechaFinal])->get();
+
+
+        if ($exportar == 1) {
+            $pdf = Pdf::loadView('reportes.comision', compact('vendedor', 'ventas', 'recaudado', 'ventas_anticipadas', 'fechaInicio', 'fechaFinal', 'sales_percentage', 'collection_percentage'));
+            return $pdf->download('comision.pdf');
+        }
+
+        return view('reportes.ventas', compact('contratos', 'fechaInicio','fechaFinal'));
+
+
+        /*
+        // Obtener bodegas activas
+        $bodegas = Bodega::where('statuses_id', 2)->get();
+        $productosId = Stock::pluck('products_id')->toArray();
+
+        // Iniciar SELECT con el nombre del producto
+        $select = [
+            DB::raw("CONCAT(products.sku, ' - ', products.description, ' - ', products.color , ' (', brands.name,')' ) as product")
+        ];
+
+        // Agregar una columna dinámica por cada bodega
+        foreach ($bodegas as $bodega) {
+            $alias = 'bodega_' . $bodega->id;
+            $select[] = DB::raw("SUM(CASE WHEN warehouses.id = {$bodega->id} THEN stock.quantity ELSE 0 END) AS `$alias`");
+        }
+
+        // Ejecutar la consulta
+        $datos = DB::table('stock')
+            ->join('products', 'stock.products_id', '=', 'products.id')
+            ->join('brands', 'products.brands_id', '=', 'brands.id')
+            ->join('warehouses', 'stock.warehouses_id', '=', 'warehouses.id')
+            ->selectRaw(implode(', ', $select))
+            ->whereIn('stock.products_id', $productosId)
+            ->where('products.track_inventory', 1)
+            ->groupBy('products.id', 'products.description')
+            ->orderBy('products.description')
+            ->get();
+
+        return view('reportes.existencia', compact('datos', 'bodegas'));*/
+    }
 }

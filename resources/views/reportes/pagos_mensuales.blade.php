@@ -27,7 +27,7 @@
                         <!-- Botón Excel -->
                         <a href="#" data-bs-toggle="modal" data-bs-target="#modal-filtro"
                             class="btn btn-sm btn-info btn-wave" id="btn-export-excel">
-                            <i class="ri-filter-3-line"></i> Filtrar
+                            <i class="ri-filter-3-line"></i> Filtrardescription
                         </a>
 
                     </div>

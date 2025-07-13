@@ -115,4 +115,6 @@ Route::middleware(['auth'])->group(function () {
     Route::get('reportes/existencia', [ReportesController::class, 'existencia']);
     Route::get('reportes/generales', [ReportesController::class, 'generales']);
     Route::get('reportes/pagos_mensuales', [ReportesController::class, 'pagos_mensuales']);
+
+    Route::get('reportes/ventas', [ReportesController::class, 'ventas']);
 });

@@ -5,6 +5,7 @@ namespace App\Models\ventas;
 use App\Models\administracion\Bodega;
 use App\Models\administracion\Cliente;
 use App\Models\catalogo\Estado;
+use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 
@@ -65,4 +66,8 @@ class Contrato extends Model
         return $this->hasMany(Abono::class, 'contracts_id');
     }
 
+    public function vendedores()
+    {
+        return $this->belongsToMany(User::class, 'contract_employees', 'contracts_id', 'users_id');
+    }
 }
