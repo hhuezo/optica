@@ -635,8 +635,17 @@ class ClienteController extends Controller
 
         $abonos = $contrato->abonos->sum('amount') ?? 0.00;
 
+        $totalAmount = 0.00;
+
+        foreach ($contrato->detalles as $detalle) {
+            $subTotal = $detalle->quantity * $detalle->price * (1 - $detalle->discount / 100) ?? 0.0;
+            $totalAmount += $subTotal;
+        }
+
+
+
         $users = User::where('id', '>', 1)->get();
-        return view('administracion.cliente.contrato_show', compact('contrato', 'tab', 'bodegas', 'productos', 'users', 'usuariosAsignados', 'abonos'));
+        return view('administracion.cliente.contrato_show', compact('contrato', 'tab', 'bodegas', 'productos', 'users', 'usuariosAsignados', 'abonos','totalAmount'));
     }
 
     public function contrato_empleado_store(Request $request, string $id)
