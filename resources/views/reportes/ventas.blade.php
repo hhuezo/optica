@@ -19,7 +19,7 @@
             <div class="card custom-card">
                 <div class="card-header justify-content-between">
                     <div class="card-title">
-                        Pagos efectuados {{ !empty($fechaInicio) ? date('d/m/Y', strtotime($fechaInicio)) : '' }}
+                        Ventas {{ !empty($fechaInicio) ? date('d/m/Y', strtotime($fechaInicio)) : '' }}
                         {{ !empty($fechaFinal) ? ' - ' . date('d/m/Y', strtotime($fechaFinal)) : '' }}
 
                     </div>
