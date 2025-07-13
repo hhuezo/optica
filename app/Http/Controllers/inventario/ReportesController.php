@@ -387,10 +387,10 @@ class ReportesController extends Controller
 
         $contratos = Contrato::whereBetween('date',[$fechaInicio,$fechaFinal])->get();
 
+        $exportar = $request->exportar ?? 0;
 
         if ($exportar == 1) {
-            $pdf = Pdf::loadView('reportes.comision', compact('vendedor', 'ventas', 'recaudado', 'ventas_anticipadas', 'fechaInicio', 'fechaFinal', 'sales_percentage', 'collection_percentage'));
-            return $pdf->download('comision.pdf');
+            return view('reportes.ventas_excel', compact('contratos', 'fechaInicio','fechaFinal'));
         }
 
         return view('reportes.ventas', compact('contratos', 'fechaInicio','fechaFinal'));
