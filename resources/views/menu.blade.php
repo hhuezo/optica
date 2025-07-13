@@ -472,6 +472,11 @@
                                         <a href="{{ url('reportes/pagos_mensuales') }}" id="reportePagosOption"
                                             class="side-menu__item">Pagos mensuales</a>
                                     </li>
+
+                                     <li class="slide">
+                                        <a href="{{ url('reportes/ventas') }}" id="reporteVentasOption"
+                                            class="side-menu__item">Reporte de ventas</a>
+                                    </li>
                                 </ul>
                             </li>
                             <!-- End::slide -->

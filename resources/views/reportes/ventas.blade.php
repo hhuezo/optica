@@ -176,7 +176,7 @@
     <!-- Activar DataTable -->
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            expandMenuAndHighlightOption('reportesMenu', 'reportePagosOption');
+            expandMenuAndHighlightOption('reportesMenu', 'reporteVentasOption');
 
         });
     </script>
