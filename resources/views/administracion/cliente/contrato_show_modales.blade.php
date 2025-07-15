@@ -73,8 +73,8 @@
 
                         <div class="col-xl-3 col-lg-3 col-md-12 col-sm-12">
                             <label for="input-label" class="form-label">Adición</label>
-                            <input type="text" class="form-control" name="right_eye_graduation"
-                                value="{{ old('right_eye_graduation') }}">
+                            <input type="text" class="form-control" name="right_eye_addition"
+                                value="{{ old('right_eye_addition') }}">
                         </div>
 
 
@@ -103,8 +103,8 @@
 
                         <div class="col-xl-3 col-lg-3 col-md-12 col-sm-12">
                             <label for="input-label" class="form-label">Adición</label>
-                            <input type="text" class="form-control" name="left_eye_graduation"
-                                value="{{ old('left_eye_graduation') }}">
+                            <input type="text" class="form-control" name="left_eye_addition"
+                                value="{{ old('left_eye_addition') }}">
                         </div>
 
 
@@ -137,6 +137,7 @@
                 <div class="modal-body">
                     <div class="row gy-4">
                         <input type="hidden" id="total_amount" value="{{ $totalAmount }}">
+                        <input type="hidden" name="advance" id="advance_modal" class="form-control">
                         <input type="hidden" name="monthly_payment" id="monthly_payment" class="form-control">
 
                         <h6>¿Desea procesar el servicio?</h6>
@@ -167,7 +168,7 @@
                         <div class="col-12">
                             <label class="form-label">Saldo</label>
                             <input type="text" class="form-control"
-                                value="{{ number_format($contrato->amount - $abonos, 2) }}" readonly>
+                                value="{{ number_format($contrato->amount - $abonos - $contrato->advance, 2) }}" readonly>
                         </div>
                         <div class="col-12">
                             <label class="form-label">Fecha</label>

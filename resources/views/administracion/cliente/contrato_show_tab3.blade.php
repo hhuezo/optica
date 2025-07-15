@@ -70,7 +70,7 @@
                        <strong>Adelanto $</strong>
                    </td>
                    <td><input type="number" name="advance" id="advance" class="form-control" step="0.01"
-                           onchange="calcMonthlyPayment()" value="{{ old('advance') }}"></td>
+                           onInput="calcMonthlyPayment()" value="{{ old('advance') }}"></td>
                    <td colspan="4" style="text-align: right"><strong>Cuota</strong></td>
                    <td style="text-align: right">
                        <strong><span id="span_monthly_payment"></span></strong>

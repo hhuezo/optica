@@ -62,7 +62,8 @@
                    <div class="col-xl-3 col-lg-3 col-md-12 col-sm-12">
                        <label for="input-label" class="form-label">Abonos</label>
 
-                       <input type="text" class="form-control" readonly value="{{ number_format($abonos, 2) }}">
+                       <input type="text" class="form-control" readonly
+                           value="{{ number_format($abonos + $contrato->advance, 2) }}">
                    </div>
 
 
@@ -70,7 +71,7 @@
                        <label for="input-label" class="form-label">Saldo</label>
 
                        <input type="text" class="form-control" readonly
-                           value="{{ number_format($contrato->amount - $abonos, 2) }}">
+                           value="{{ number_format($contrato->amount - $abonos - $contrato->advance, 2) }}">
                    </div>
 
                    <div class="col-xl-3 col-lg-3 col-md-12 col-sm-12">
@@ -96,12 +97,9 @@
        </div>
 
        <div class="card-footer" style="text-align: right">
-           @if ($contrato->statuses_id == 4)
-               <button type="submit" class="btn btn-primary">Siguiente</button>
-           @else
-               <button type="button" class="btn btn-primary" onclick="activarPestana('about-style8-tab-pane')">
-                   Siguiente
-               </button>
-           @endif
+
+           <button type="button" class="btn btn-primary" onclick="activarPestana('about-style8-tab-pane')">
+               Siguiente
+           </button>
        </div>
    </form>

@@ -309,7 +309,25 @@ class ClienteController extends Controller
             'number' => 'required|string|max:255|unique:contracts,number',
             'warehouses_id' => 'required|exists:warehouses,id',
             'payment_type' => 'required|in:CONTADO,CREDITO',
-            'term' => 'required_if:payment_type,CREDITO|nullable|integer|min:1',
+            'term' => [
+                'nullable',
+                'integer',
+                function ($attribute, $value, $fail) use ($request) {
+                    $paymentType = $request->input('payment_type');
+                    if ($paymentType === 'CREDITO') {
+                        if (is_null($value)) {
+                            return $fail('El plazo es obligatorio si el tipo de pago es crédito.');
+                        }
+                        if ($value <= 1) {
+                            return $fail('El plazo debe ser mayor a 1 si el tipo de pago es crédito.');
+                        }
+                    } elseif ($paymentType === 'CONTADO') {
+                        if (!is_null($value) && $value != 1) {
+                            return $fail('El plazo debe ser igual a 1 si el tipo de pago es contado.');
+                        }
+                    }
+                }
+            ],
             //'advance' => 'nullable|numeric|gt:0',
             'diagnostic' => 'nullable|string|max:255',
             'service_for' => 'nullable|string|max:150',
@@ -322,7 +340,7 @@ class ClienteController extends Controller
             'payment_type.in' => 'El tipo de pago seleccionado no es válido.',
             'warehouses_id.required' => 'Debe seleccionar una bodega.',
             'warehouses_id.exists' => 'La bodega seleccionada no existe.',
-            'term.required_if' => 'Debe especificar el plazo si el tipo de pago es crédito.',
+            'term.required_if' => 'El plazo debe ser mayor a 1 si el tipo de pago es crédito.',
             'term.integer' => 'El plazo debe ser un número entero.',
             'term.min' => 'El plazo debe ser al menos 1.',
             'advance.numeric' => 'El campo adelanto debe ser un número válido.',
@@ -337,11 +355,11 @@ class ClienteController extends Controller
 
 
 
-        if ($validated['payment_type'] === 'CONTADO' && !empty($validated['term'])) {
+        /*if ($validated['payment_type'] === 'CONTADO' && !empty($validated['term'])) {
             return back()->withErrors([
                 'term' => 'No debe ingresar un plazo cuando el tipo de pago es contado.',
             ])->withInput();
-        }
+        }*/
 
 
         try {
@@ -487,13 +505,13 @@ class ClienteController extends Controller
             'right_eye_sphere'     => 'nullable|string|max:30',
             'right_eye_cylinder'   => 'nullable|string|max:30',
             'right_eye_axis'       => 'nullable|string|max:30',
-            'right_eye_graduation' => 'nullable|string|max:30',
+            'right_eye_addition' => 'nullable|string|max:30',
 
             // Campos para ojo izquierdo
             'left_eye_sphere'     => 'nullable|string|max:30',
             'left_eye_cylinder'   => 'nullable|string|max:30',
             'left_eye_axis'       => 'nullable|string|max:30',
-            'left_eye_graduation' => 'nullable|string|max:30',
+            'left_eye_addition' => 'nullable|string|max:30',
 
         ], [
 
@@ -512,12 +530,12 @@ class ClienteController extends Controller
             'right_eye_sphere.max' => 'La esfera del ojo derecho no debe exceder los 30 caracteres.',
             'right_eye_cylinder.max' => 'El cilindro del ojo derecho no debe exceder los 30 caracteres.',
             'right_eye_axis.max' => 'El eje del ojo derecho no debe exceder los 30 caracteres.',
-            'right_eye_graduation.max' => 'La adición del ojo derecho no debe exceder los 30 caracteres.',
+            'right_eye_addition.max' => 'La adición del ojo derecho no debe exceder los 30 caracteres.',
 
             'left_eye_sphere.max' => 'La esfera del ojo izquierdo no debe exceder los 30 caracteres.',
             'left_eye_cylinder.max' => 'El cilindro del ojo izquierdo no debe exceder los 30 caracteres.',
             'left_eye_axis.max' => 'El eje del ojo izquierdo no debe exceder los 30 caracteres.',
-            'left_eye_graduation.max' => 'La adición del ojo izquierdo no debe exceder los 30 caracteres.',
+            'left_eye_addition.max' => 'La adición del ojo izquierdo no debe exceder los 30 caracteres.',
         ]);
 
 
@@ -543,20 +561,20 @@ class ClienteController extends Controller
             $detalle->quantity = $validated['quantity'];
             $detalle->price = $validated['price'];
             $detalle->discount = $request->discount ?? 0.00;
-            $detalle->right_eye_graduation = $validated['right_eye_graduation'];
-            $detalle->left_eye_graduation = $validated['left_eye_graduation'];
+            //$detalle->right_eye_graduation = $validated['right_eye_graduation'];
+            //$detalle->left_eye_graduation = $validated['left_eye_graduation'];
 
             // Ojo derecho
             $detalle->right_eye_sphere     = $validated['right_eye_sphere'] ?? null;
             $detalle->right_eye_cylinder   = $validated['right_eye_cylinder'] ?? null;
             $detalle->right_eye_axis       = $validated['right_eye_axis'] ?? null;
-            $detalle->right_eye_graduation = $validated['right_eye_graduation'] ?? null;
+            $detalle->right_eye_addition   = $validated['right_eye_addition'] ?? null;
 
             // Ojo izquierdo
             $detalle->left_eye_sphere     = $validated['left_eye_sphere'] ?? null;
             $detalle->left_eye_cylinder   = $validated['left_eye_cylinder'] ?? null;
             $detalle->left_eye_axis       = $validated['left_eye_axis'] ?? null;
-            $detalle->left_eye_graduation = $validated['left_eye_graduation'] ?? null;
+            $detalle->left_eye_addition   = $validated['left_eye_addition'] ?? null;
 
 
             $detalle->save();
@@ -645,7 +663,7 @@ class ClienteController extends Controller
 
 
         $users = User::where('id', '>', 1)->get();
-        return view('administracion.cliente.contrato_show', compact('contrato', 'tab', 'bodegas', 'productos', 'users', 'usuariosAsignados', 'abonos','totalAmount'));
+        return view('administracion.cliente.contrato_show', compact('contrato', 'tab', 'bodegas', 'productos', 'users', 'usuariosAsignados', 'abonos', 'totalAmount'));
     }
 
     public function contrato_empleado_store(Request $request, string $id)
@@ -691,7 +709,7 @@ class ClienteController extends Controller
         $userId = auth()->user()->id;
 
         // 1. Actualizar monto del contrato
-        $this->updateContractAmount($contractId);
+        $this->updateContractAmount($contractId, $request->advance);
 
         // 2. Verificar stock insuficiente
         $errores = DB::table('contract_details')
@@ -841,7 +859,7 @@ class ClienteController extends Controller
     }
 
 
-    private function updateContractAmount($contractId)
+    private function updateContractAmount($contractId, $advance)
     {
         // Calcular el total del contrato
         $total = DB::table('contract_details')
@@ -850,9 +868,12 @@ class ClienteController extends Controller
             ->value('total');
 
         // Obtener el anticipo (advance)
-        $advance = DB::table('contracts')
+        /*$advance = DB::table('contracts')
             ->where('id', $contractId)
-            ->value('advance');
+            ->value('advance');*/
+
+
+        //dd($total , $advance);
 
         // Actualizar el contrato con el monto total y restante
         DB::table('contracts')
@@ -885,6 +906,14 @@ class ClienteController extends Controller
             'date.date' => 'La fecha ingresada no es válida.',
         ]);
 
+        $contrato = Contrato::findOrFail($contractId);
+
+        if ($request->amount > $contrato->remaining) {
+            return back()
+                ->withErrors(['amount' => 'El monto del abono no puede ser mayor al saldo pendiente del contrato.'])
+                ->withInput();
+        }
+
         try {
             DB::beginTransaction();
 
@@ -900,7 +929,7 @@ class ClienteController extends Controller
             $abono->save();
 
             // Actualizar el contrato
-            $contrato = Contrato::findOrFail($contractId);
+
             $contrato->remaining -= $abono->amount;
             $contrato->save();
 
@@ -940,10 +969,10 @@ class ClienteController extends Controller
     {
         $contrato = Contrato::findOrFail($id);
 
-        return view('administracion.cliente.contrato_receta', compact('contrato'));
+        //return view('administracion.cliente.contrato_receta', compact('contrato'));
 
         $pdf = PDF::loadView('administracion.cliente.contrato_receta', compact('contrato'));
-        return $pdf->download('documento.pdf');
+        return $pdf->download('receta.pdf');
     }
 
 

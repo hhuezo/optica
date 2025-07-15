@@ -87,7 +87,7 @@
                             aria-controls="services-style8-tab-pane" aria-selected="false">Productos</button>
                     </li>
                     <li class="nav-item" role="presentation">
-                        <button class="nav-link  {{ $tab == 4 ? 'active' : '' }}" id="abonos-style8-tab"
+                        <button class="nav-link  {{ $tab == 4 ? 'active' : '' }}" id="abonos-style8-tab" {{$contrato->statuses_id == 4 ? 'disabled':''}}
                             data-bs-toggle="tab" data-bs-target="#abonos-style8-tab-pane" type="button" role="tab"
                             aria-controls="abonos-style8-tab-pane" aria-selected="false">Abonos</button>
                     </li>
@@ -164,6 +164,8 @@
             const advanceInput = document.getElementById('advance');
             const advance = advanceInput ? parseFloat(advanceInput.value) || 0.00 : 0.00;
             const term = parseFloat(document.getElementById('term').value) || 0.00;
+
+            document.getElementById('advance_modal').value = advance;
 
             console.log("term ", term);
             if (term > 0) {
