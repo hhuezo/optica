@@ -22,6 +22,9 @@
                         Ventas {{ !empty($fechaInicio) ? date('d/m/Y', strtotime($fechaInicio)) : '' }}
                         {{ !empty($fechaFinal) ? ' - ' . date('d/m/Y', strtotime($fechaFinal)) : '' }}
 
+                        <br>
+                        Número de contratos: {{ isset($contratos) ? $contratos->count() : 0 }}
+
                     </div>
                     <div class="prism-toggle d-flex gap-2">
                         <!-- Botón Excel -->
@@ -119,7 +122,7 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h6 class="modal-title" id="exampleModalLgLabel">Filtrar..</h6>
+                    <h6 class="modal-title" id="exampleModalLgLabel">Filtrar</h6>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <form method="GET" action="{{ url('reportes/ventas') }}">

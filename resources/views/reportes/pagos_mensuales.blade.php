@@ -81,7 +81,7 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h6 class="modal-title" id="exampleModalLgLabel">Filtrar..</h6>
+                    <h6 class="modal-title" id="exampleModalLgLabel">Filtrar</h6>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <form method="GET" action="{{ url('reportes/pagos_mensuales') }}">

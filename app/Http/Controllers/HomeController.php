@@ -137,6 +137,34 @@ class HomeController extends Controller
             $valuesPrivado[] = $item->total + 0;
         }
 
-        return view('home', compact('data', 'categories', 'values','valuesPrivado'));
+
+        $fechaFin = Carbon::now()->endOfMonth();
+        $fechaInicio = Carbon::now()->subMonths(11)->startOfMonth();
+
+        $totalContratosPorMes = DB::table('contracts')
+            ->whereIn('contracts.statuses_id', [5, 10])
+            ->whereBetween('contracts.created_at', [$fechaInicio, $fechaFin])
+            ->select(
+                DB::raw("YEAR(contracts.created_at) as anio"),
+                DB::raw("MONTH(contracts.created_at) as mes"),
+                DB::raw("COUNT(*) as total_contratos")
+            )
+            ->groupBy('anio', 'mes')
+            ->orderBy('anio', 'asc')
+            ->orderBy('mes', 'asc')
+            ->get();
+
+        $categoriesContratos = [];
+        $valuesContratos = [];
+
+        foreach ($totalContratosPorMes as $item) {
+            //$valor = $item->anio . '-' . $meses[$item->mes];
+            $categoriesContratos[] = $meses[$item->mes]; // ✅ forma correcta
+            $valuesContratos[] = $item->total_contratos;
+        }
+
+
+
+        return view('home', compact('data', 'categories', 'values', 'valuesPrivado', 'categoriesContratos', 'valuesContratos'));
     }
 }

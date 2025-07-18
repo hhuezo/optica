@@ -100,6 +100,18 @@
                 </div>
             </div>
         </div>
+
+
+
+        <div class="col-xl-12">
+            <div class="card custom-card">
+                <div class="card-body">
+
+                    <div id="grafico-contratos" style="width: 100%; height: 500px; margin: 0 auto;"></div>
+
+                </div>
+            </div>
+        </div>
     </div>
 
     <script>
@@ -158,6 +170,53 @@
                     enabled: true
                 }
             }
+        });
+
+         Highcharts.chart('grafico-contratos', {
+            chart: {
+                type: 'column'
+            },
+            title: {
+                text: 'Contratos por mes'
+            },
+            xAxis: {
+                categories: @json($categoriesContratos),
+                title: {
+                    text: 'Mes'
+                }
+            },
+            yAxis: {
+                min: 0,
+                title: {
+                    text: 'Cantidad de contratos'
+                }
+            },
+            tooltip: {
+                pointFormat: 'Total: <b>{point.y}</b>'
+            },
+            plotOptions: {
+                column: {
+                    dataLabels: {
+                        enabled: true,
+                        format: '{point.y}',
+                        style: {
+                            fontWeight: 'bold',
+                            fontSize: '13px'
+                        }
+                    }
+                }
+            },
+            series: [{
+                name: 'Contratos',
+                data: [
+                    @foreach($valuesContratos as $i => $value)
+                        {
+                            y: {{ $value }},
+                            color: Highcharts.getOptions().colors[{{ $i }}]
+                        }@if(!$loop->last),@endif
+                    @endforeach
+                ]
+            }]
         });
     </script>
 

@@ -62,10 +62,15 @@
         <table width="100%">
             <tr style="background-color: #ffffff;">
 
-                <td style="border: 0">
+                <td style="border: 0" colspan="6">
                     <div align="center"><strong>Reporte de ventas de
                             {{ !empty($fechaInicio) ? date('d/m/Y', strtotime($fechaInicio)) : '' }} a
                             {{ !empty($fechaFinal) ? ' - ' . date('d/m/Y', strtotime($fechaFinal)) : '' }}
+                        </strong></div>
+                </td>
+
+                 <td style="border: 0" colspan="4">
+                    <div align="center"><strong> Número de contratos: {{ isset($contratos) ? $contratos->count() : 0 }}
                         </strong></div>
                 </td>
             </tr>
